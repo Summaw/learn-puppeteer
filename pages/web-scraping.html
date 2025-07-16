@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Scraping - Learn Puppeteer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="fas fa-robot"></i>
+                    <span>PuppeteerLearn</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li><a href="../index.html#tutorials" class="nav-link">Tutorials</a></li>
+                <li><a href="../index.html#examples" class="nav-link">Examples</a></li>
+                <li><a href="../index.html#resources" class="nav-link">Resources</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tutorial Content -->
+    <section class="tutorial-content">
+        <div class="container">
+            <div class="tutorial-header">
+                <h1>Web Scraping with Puppeteer</h1>
+                <p class="tutorial-subtitle">Learn to extract data from websites using selectors, evaluate functions, and handle dynamic content</p>
+            </div>
+
+            <div class="tutorial-navigation">
+                <div class="nav-item">
+                    <span class="nav-number">01</span>
+                    <span class="nav-title">Selectors</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">02</span>
+                    <span class="nav-title">Data Extraction</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">03</span>
+                    <span class="nav-title">Dynamic Content</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">04</span>
+                    <span class="nav-title">Advanced Techniques</span>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 1: Understanding Selectors</h2>
+                <p>Selectors are the foundation of web scraping. Learn how to target specific elements on a webpage.</p>
+                
+                <div class="selector-types">
+                    <div class="selector-card">
+                        <h4>CSS Selectors</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">CSS Selectors</span>
+                            </div>
+                            <pre><code class="language-javascript">// By ID
+await page.$('#unique-id');
+
+// By Class
+await page.$('.class-name');
+
+// By Tag
+await page.$('div');
+
+// By Attribute
+await page.$('[data-test="button"]');
+
+// Descendant
+await page.$('div .child-class');
+
+// Child
+await page.$('ul > li');
+
+// Pseudo-selectors
+await page.$('li:first-child');
+await page.$('p:nth-child(2)');</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="selector-card">
+                        <h4>XPath Selectors</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">XPath Examples</span>
+                            </div>
+                            <pre><code class="language-javascript">// Basic XPath
+await page.$x('//div[@class="content"]');
+
+// Text contains
+await page.$x('//button[contains(text(), "Submit")]');
+
+// Following sibling
+await page.$x('//h1/following-sibling::p');
+
+// Parent element
+await page.$x('//span[@class="price"]/parent::div');
+
+// Multiple conditions
+await page.$x('//a[@class="link" and @href="/home"]');</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <div>
+                        <h4>Pro Tip</h4>
+                        <p>Use browser DevTools to test selectors. Right-click → Inspect → Console, then try <code>document.querySelector('your-selector')</code></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 2: Data Extraction Methods</h2>
+                <p>Learn different methods to extract data from web pages.</p>
+                
+                <div class="extraction-methods">
+                    <div class="method-card">
+                        <h4>Single Element Extraction</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">single-element.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.goto('https://quotes.toscrape.com/');
+  
+  // Get text content
+  const firstQuote = await page.$eval('.quote .text', 
+    element => element.textContent
+  );
+  
+  // Get attribute value
+  const authorLink = await page.$eval('.quote .author + a', 
+    element => element.href
+  );
+  
+  // Get multiple properties
+  const quoteData = await page.$eval('.quote', element => ({
+    text: element.querySelector('.text').textContent,
+    author: element.querySelector('.author').textContent,
+    tags: Array.from(element.querySelectorAll('.tag'))
+           .map(tag => tag.textContent)
+  }));
+  
+  console.log('First Quote:', firstQuote);
+  console.log('Author Link:', authorLink);
+  console.log('Quote Data:', quoteData);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="single-element">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Multiple Elements Extraction</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">multiple-elements.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.goto('https://quotes.toscrape.com/');
+  
+  // Extract all quotes
+  const quotes = await page.$$eval('.quote', elements => {
+    return elements.map(element => ({
+      text: element.querySelector('.text').textContent,
+      author: element.querySelector('.author').textContent,
+      tags: Array.from(element.querySelectorAll('.tag'))
+             .map(tag => tag.textContent)
+    }));
+  });
+  
+  // Extract navigation links
+  const navLinks = await page.$$eval('nav a', links => {
+    return links.map(link => ({
+      text: link.textContent.trim(),
+      href: link.href
+    }));
+  });
+  
+  console.log(`Found ${quotes.length} quotes`);
+  console.log('Sample quote:', quotes[0]);
+  console.log('Navigation links:', navLinks);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="multiple-elements">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <h4>Table Data Extraction</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">table-scraping.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/table');
+  
+  // Extract table data
+  const tableData = await page.evaluate(() => {
+    const table = document.querySelector('table');
+    const rows = Array.from(table.querySelectorAll('tr'));
+    
+    // Get headers
+    const headers = rows[0].querySelectorAll('th');
+    const headerTexts = Array.from(headers).map(th => th.textContent.trim());
+    
+    // Get data rows
+    const dataRows = rows.slice(1).map(row => {
+      const cells = Array.from(row.querySelectorAll('td'));
+      const rowData = {};
+      
+      cells.forEach((cell, index) => {
+        rowData[headerTexts[index]] = cell.textContent.trim();
+      });
+      
+      return rowData;
+    });
+    
+    return {
+      headers: headerTexts,
+      data: dataRows
+    };
+  });
+  
+  console.log('Table Headers:', tableData.headers);
+  console.log('Table Data:', tableData.data);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="table-scraping">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 3: Handling Dynamic Content</h2>
+                <p>Learn to scrape content that loads dynamically with JavaScript.</p>
+                
+                <div class="dynamic-content-examples">
+                    <div class="dynamic-card">
+                        <h4>Waiting for Elements</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">waiting-elements.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/dynamic');
+  
+  // Wait for specific element to appear
+  await page.waitForSelector('.dynamic-content', { timeout: 5000 });
+  
+  // Wait for element to be visible
+  await page.waitForSelector('.modal', { visible: true });
+  
+  // Wait for element to be hidden
+  await page.waitForSelector('.loading', { hidden: true });
+  
+  // Wait for function to return true
+  await page.waitForFunction(() => {
+    return document.querySelector('.data-loaded') !== null;
+  });
+  
+  // Wait for network activity to finish
+  await page.waitForLoadState('networkidle');
+  
+  // Now extract the dynamic content
+  const dynamicData = await page.$eval('.dynamic-content', 
+    element => element.textContent
+  );
+  
+  console.log('Dynamic content:', dynamicData);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="dynamic-card">
+                        <h4>Infinite Scroll</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">infinite-scroll.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/infinite-scroll');
+  
+  let items = [];
+  let previousHeight = 0;
+  
+  while (true) {
+    // Get current scroll height
+    const currentHeight = await page.evaluate(() => document.body.scrollHeight);
+    
+    // Break if no new content loaded
+    if (currentHeight === previousHeight) {
+      break;
+    }
+    
+    // Scroll to bottom
+    await page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    
+    // Wait for new content to load
+    await page.waitForTimeout(2000);
+    
+    // Extract new items
+    const newItems = await page.$$eval('.item:not(.extracted)', elements => {
+      return elements.map(element => {
+        element.classList.add('extracted'); // Mark as extracted
+        return {
+          title: element.querySelector('.title').textContent,
+          description: element.querySelector('.description').textContent
+        };
+      });
+    });
+    
+    items.push(...newItems);
+    previousHeight = currentHeight;
+    
+    console.log(`Loaded ${items.length} items so far...`);
+  }
+  
+  console.log(`Final count: ${items.length} items`);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="dynamic-card">
+                        <h4>AJAX Content</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">ajax-content.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  // Listen for network requests
+  page.on('response', response => {
+    if (response.url().includes('/api/data')) {
+      console.log('API call detected:', response.url());
+    }
+  });
+  
+  await page.goto('https://example.com/ajax-content');
+  
+  // Trigger AJAX request
+  await page.click('#load-more-btn');
+  
+  // Wait for API response and DOM update
+  await page.waitForResponse(response => 
+    response.url().includes('/api/data') && response.status() === 200
+  );
+  
+  // Wait for DOM to update
+  await page.waitForSelector('.new-content');
+  
+  // Extract the loaded content
+  const ajaxContent = await page.$$eval('.ajax-item', elements => {
+    return elements.map(element => ({
+      id: element.dataset.id,
+      title: element.querySelector('.title').textContent,
+      content: element.querySelector('.content').textContent
+    }));
+  });
+  
+  console.log('AJAX content loaded:', ajaxContent);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h4>Important Note</h4>
+                        <p>Always respect website terms of service and robots.txt. Add delays between requests and don't overload servers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 4: Advanced Scraping Techniques</h2>
+                <p>Master advanced techniques for complex scraping scenarios.</p>
+                
+                <div class="advanced-techniques">
+                    <div class="technique-card">
+                        <h4>Pagination</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">pagination.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  let allData = [];
+  let currentPage = 1;
+  
+  while (true) {
+    console.log(`Scraping page ${currentPage}...`);
+    
+    await page.goto(`https://example.com/products?page=${currentPage}`);
+    
+    // Check if page has content
+    const hasContent = await page.$('.product-item') !== null;
+    if (!hasContent) {
+      console.log('No more pages to scrape');
+      break;
+    }
+    
+    // Extract page data
+    const pageData = await page.$$eval('.product-item', elements => {
+      return elements.map(element => ({
+        name: element.querySelector('.product-name').textContent,
+        price: element.querySelector('.price').textContent,
+        image: element.querySelector('img').src
+      }));
+    });
+    
+    allData.push(...pageData);
+    
+    // Check for next page button
+    const nextButton = await page.$('.pagination .next');
+    if (!nextButton) {
+      console.log('No next page button found');
+      break;
+    }
+    
+    const isDisabled = await page.evaluate(btn => 
+      btn.classList.contains('disabled'), nextButton
+    );
+    
+    if (isDisabled) {
+      console.log('Next button is disabled');
+      break;
+    }
+    
+    currentPage++;
+  }
+  
+  console.log(`Total products scraped: ${allData.length}`);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="technique-card">
+                        <h4>Error Handling & Retries</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">error-handling.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+async function scrapeWithRetry(url, maxRetries = 3) {
+  const browser = await puppeteer.launch();
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const page = await browser.newPage();
+      
+      // Set timeout
+      await page.setDefaultTimeout(30000);
+      
+      // Navigate with retry logic
+      await page.goto(url, { 
+        waitUntil: 'networkidle2',
+        timeout: 30000 
+      });
+      
+      // Wait for content to load
+      await page.waitForSelector('.content', { timeout: 10000 });
+      
+      // Extract data
+      const data = await page.evaluate(() => {
+        const elements = document.querySelectorAll('.item');
+        if (elements.length === 0) {
+          throw new Error('No items found on page');
+        }
+        
+        return Array.from(elements).map(element => ({
+          title: element.querySelector('.title')?.textContent || '',
+          description: element.querySelector('.description')?.textContent || ''
+        }));
+      });
+      
+      await page.close();
+      await browser.close();
+      
+      return data;
+      
+    } catch (error) {
+      console.log(`Attempt ${attempt} failed:`, error.message);
+      
+      if (attempt === maxRetries) {
+        await browser.close();
+        throw new Error(`Scraping failed after ${maxRetries} attempts`);
+      }
+      
+      // Wait before retry
+      await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+    }
+  }
+}
+
+// Usage
+(async () => {
+  try {
+    const data = await scrapeWithRetry('https://example.com/data');
+    console.log('Scraped data:', data);
+  } catch (error) {
+    console.error('Scraping failed:', error.message);
+  }
+})();</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="technique-card">
+                        <h4>Data Export</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">data-export.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
+
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/data');
+  
+  // Extract data
+  const scrapedData = await page.$$eval('.data-item', elements => {
+    return elements.map(element => ({
+      id: element.dataset.id,
+      title: element.querySelector('.title').textContent,
+      description: element.querySelector('.description').textContent,
+      price: element.querySelector('.price').textContent,
+      scrapedAt: new Date().toISOString()
+    }));
+  });
+  
+  // Save as JSON
+  const jsonData = JSON.stringify(scrapedData, null, 2);
+  fs.writeFileSync('scraped-data.json', jsonData);
+  
+  // Save as CSV
+  const csvHeaders = Object.keys(scrapedData[0]).join(',');
+  const csvRows = scrapedData.map(item => 
+    Object.values(item).map(value => 
+      `"${value}"`
+    ).join(',')
+  );
+  const csvContent = [csvHeaders, ...csvRows].join('\n');
+  fs.writeFileSync('scraped-data.csv', csvContent);
+  
+  // Save as HTML report
+  const htmlReport = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Scraping Report</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+      </style>
+    </head>
+    <body>
+      <h1>Scraping Report</h1>
+      <p>Total items: ${scrapedData.length}</p>
+      <p>Generated: ${new Date().toLocaleString()}</p>
+      
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Price</th>
+        </tr>
+        ${scrapedData.map(item => `
+          <tr>
+            <td>${item.id}</td>
+            <td>${item.title}</td>
+            <td>${item.description}</td>
+            <td>${item.price}</td>
+          </tr>
+        `).join('')}
+      </table>
+    </body>
+    </html>
+  `;
+  
+  fs.writeFileSync('report.html', htmlReport);
+  
+  console.log('Data exported to:');
+  console.log('- scraped-data.json');
+  console.log('- scraped-data.csv');
+  console.log('- report.html');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Best Practices for Web Scraping</h2>
+                <div class="best-practices">
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>Respectful Scraping</h4>
+                            <p>Add delays between requests and check robots.txt</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Add delays between requests
+await page.waitForTimeout(1000);
+
+// Check robots.txt before scraping
+const robotsUrl = new URL('/robots.txt', baseUrl);
+const robotsResponse = await fetch(robotsUrl);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>User Agent Rotation</h4>
+                            <p>Use different user agents to avoid detection</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">const userAgents = [
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+];
+
+await page.setUserAgent(userAgents[Math.floor(Math.random() * userAgents.length)]);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>Data Validation</h4>
+                            <p>Always validate scraped data before processing</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">function validateData(item) {
+  return item.title && 
+         item.title.length > 0 && 
+         item.price && 
+         !isNaN(parseFloat(item.price.replace('$', '')));
+}
+
+const validData = scrapedData.filter(validateData);</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-navigation-footer">
+                <a href="getting-started.html" class="btn btn-secondary">← Previous: Getting Started</a>
+                <a href="form-automation.html" class="btn btn-primary">Next: Form Automation →</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpful Resources - Learn Puppeteer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="fas fa-robot"></i>
+                    <span>PuppeteerLearn</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li><a href="../index.html#tutorials" class="nav-link">Tutorials</a></li>
+                <li><a href="../index.html#examples" class="nav-link">Examples</a></li>
+                <li><a href="resources.html" class="nav-link">Resources</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Resources Content -->
+    <section class="resources-content">
+        <div class="container">
+            <div class="resources-header">
+                <h1>Helpful Resources</h1>
+                <p class="resources-subtitle">Essential packages and tools to supercharge your Puppeteer automation projects</p>
+            </div>
+
+            <!-- Package Cards -->
+            <div class="packages-grid">
+                
+                <!-- Puppeteer Real Browser -->
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="package-info">
+                            <h3>puppeteer-real-browser</h3>
+                            <div class="package-badges">
+                                <span class="badge badge-primary">Anti-Detection</span>
+                                <span class="badge badge-success">Cloudflare Bypass</span>
+                                <span class="badge badge-warning">⚠️ Deprecated</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="package-description">
+                        Prevents Puppeteer from being detected as a bot in services like Cloudflare. 
+                        Allows you to pass captchas and behave like a real browser.
+                    </p>
+                    
+                    <div class="package-features">
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Cloudflare WAF bypass</li>
+                            <li><i class="fas fa-check"></i> Automatic Turnstile captcha solving</li>
+                            <li><i class="fas fa-check"></i> Real browser behavior simulation</li>
+                            <li><i class="fas fa-check"></i> Proxy support</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="package-example">
+                        <div class="example-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-button active" data-tab="real-browser-install">Installation</button>
+                                <button class="tab-button" data-tab="real-browser-usage">Usage</button>
+                                <button class="tab-button" data-tab="real-browser-advanced">Advanced</button>
+                            </div>
+                            
+                            <div class="tab-contents">
+                                <div class="tab-content active" id="real-browser-install">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">Installation</span>
+                                            <button class="run-example" data-example="real-browser-install">
+                                                <i class="fas fa-terminal"></i> Install
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-bash"># Install puppeteer-real-browser
+npm install puppeteer-real-browser
+
+# Linux users also need xvfb
+sudo apt-get install xvfb</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content" id="real-browser-usage">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">basic-usage.js</span>
+                                            <button class="run-example" data-example="real-browser-usage">
+                                                <i class="fas fa-play"></i> Run Example
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-javascript">const { connect } = require("puppeteer-real-browser");
+
+async function bypassCloudflare() {
+    const { browser, page } = await connect({
+        headless: false,
+        turnstile: true,  // Auto-solve Turnstile captchas
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+    });
+    
+    try {
+        // Navigate to a Cloudflare-protected site
+        await page.goto('https://example.com');
+        
+        // Wait for page to load
+        await page.waitForSelector('body');
+        
+        // Take screenshot to verify success
+        await page.screenshot({ 
+            path: 'cloudflare-bypass.png',
+            fullPage: true 
+        });
+        
+        console.log('✅ Successfully bypassed Cloudflare!');
+        
+    } catch (error) {
+        console.error('❌ Failed to bypass:', error);
+    } finally {
+        await browser.close();
+    }
+}
+
+bypassCloudflare();</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content" id="real-browser-advanced">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">advanced-config.js</span>
+                                            <button class="run-example" data-example="real-browser-advanced">
+                                                <i class="fas fa-play"></i> Run Example
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-javascript">const { connect } = require("puppeteer-real-browser");
+
+async function advancedConfiguration() {
+    const { browser, page } = await connect({
+        headless: false,
+        turnstile: true,
+        args: [
+            '--start-maximized',
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ],
+        customConfig: {
+            userDataDir: './user-data',  // Persistent browser data
+            chromePath: '/usr/bin/google-chrome'  // Custom Chrome path
+        },
+        connectOption: {
+            defaultViewport: null  // Use full screen
+        },
+        // Proxy configuration
+        proxy: {
+            host: 'proxy-host',
+            port: 'proxy-port',
+            username: 'proxy-username',
+            password: 'proxy-password'
+        }
+    });
+    
+    // Use real cursor movements
+    await page.goto('https://example.com');
+    
+    // Real mouse movement instead of page.click
+    await page.realClick('button[type="submit"]');
+    
+    // Real cursor movement
+    await page.realCursor.move('#search-input');
+    await page.realCursor.click();
+    
+    await browser.close();
+}
+
+advancedConfiguration();</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="package-links">
+                        <a href="https://www.npmjs.com/package/puppeteer-real-browser" class="package-link" target="_blank">
+                            <i class="fab fa-npm"></i> NPM Package
+                        </a>
+                        <a href="https://github.com/zfcsoftware/puppeteer-real-browser" class="package-link" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Puppeteer Extra -->
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <div class="package-info">
+                            <h3>puppeteer-extra</h3>
+                            <div class="package-badges">
+                                <span class="badge badge-primary">Plugin System</span>
+                                <span class="badge badge-success">Popular</span>
+                                <span class="badge badge-info">TypeScript</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="package-description">
+                        A light-weight wrapper around puppeteer that enables cool plugins through a clean interface. 
+                        Drop-in replacement for puppeteer with extended functionality.
+                    </p>
+                    
+                    <div class="package-features">
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Plugin-based architecture</li>
+                            <li><i class="fas fa-check"></i> Drop-in puppeteer replacement</li>
+                            <li><i class="fas fa-check"></i> TypeScript support</li>
+                            <li><i class="fas fa-check"></i> Extensive plugin ecosystem</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="package-example">
+                        <div class="example-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-button active" data-tab="extra-install">Installation</button>
+                                <button class="tab-button" data-tab="extra-basic">Basic Usage</button>
+                                <button class="tab-button" data-tab="extra-plugins">With Plugins</button>
+                            </div>
+                            
+                            <div class="tab-contents">
+                                <div class="tab-content active" id="extra-install">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">Installation</span>
+                                            <button class="run-example" data-example="extra-install">
+                                                <i class="fas fa-terminal"></i> Install
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-bash"># Install puppeteer-extra
+npm install puppeteer puppeteer-extra
+
+# Install popular plugins
+npm install puppeteer-extra-plugin-stealth
+npm install puppeteer-extra-plugin-adblocker</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content" id="extra-basic">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">basic-usage.js</span>
+                                            <button class="run-example" data-example="extra-basic">
+                                                <i class="fas fa-play"></i> Run Example
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-javascript">// puppeteer-extra is a drop-in replacement for puppeteer
+const puppeteer = require('puppeteer-extra');
+
+// It works exactly like regular puppeteer
+async function basicUsage() {
+    const browser = await puppeteer.launch({ 
+        headless: false 
+    });
+    
+    const page = await browser.newPage();
+    await page.goto('https://example.com');
+    
+    // All regular puppeteer methods work
+    const title = await page.title();
+    console.log('Page title:', title);
+    
+    await page.screenshot({ path: 'example.png' });
+    await browser.close();
+}
+
+basicUsage();</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content" id="extra-plugins">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">with-plugins.js</span>
+                                            <button class="run-example" data-example="extra-plugins">
+                                                <i class="fas fa-play"></i> Run Example
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer-extra');
+
+// Add stealth plugin (hides puppeteer usage)
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+
+// Add adblocker plugin (blocks ads and trackers)
+const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
+puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
+
+async function withPlugins() {
+    const browser = await puppeteer.launch({ 
+        headless: false,
+        defaultViewport: null
+    });
+    
+    const page = await browser.newPage();
+    
+    console.log('🛡️  Testing stealth plugin...');
+    await page.goto('https://bot.sannysoft.com');
+    await page.waitForTimeout(5000);
+    await page.screenshot({ path: 'stealth-test.png', fullPage: true });
+    
+    console.log('🚫 Testing adblocker plugin...');
+    await page.goto('https://www.vanityfair.com');
+    await page.waitForTimeout(3000);
+    await page.screenshot({ path: 'adblocker-test.png', fullPage: true });
+    
+    console.log('✅ All plugins working!');
+    await browser.close();
+}
+
+withPlugins();</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="package-links">
+                        <a href="https://www.npmjs.com/package/puppeteer-extra" class="package-link" target="_blank">
+                            <i class="fab fa-npm"></i> NPM Package
+                        </a>
+                        <a href="https://github.com/berstend/puppeteer-extra" class="package-link" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Puppeteer Extra Plugin Stealth -->
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div class="package-info">
+                            <h3>puppeteer-extra-plugin-stealth</h3>
+                            <div class="package-badges">
+                                <span class="badge badge-primary">Stealth</span>
+                                <span class="badge badge-success">Anti-Detection</span>
+                                <span class="badge badge-info">Plugin</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="package-description">
+                        The most popular stealth plugin for puppeteer-extra. Applies various evasion techniques 
+                        to make puppeteer undetectable by anti-bot systems.
+                    </p>
+                    
+                    <div class="package-features">
+                        <h4>Key Features:</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Removes webdriver property</li>
+                            <li><i class="fas fa-check"></i> Fixes Chrome runtime detection</li>
+                            <li><i class="fas fa-check"></i> Spoofs permissions API</li>
+                            <li><i class="fas fa-check"></i> Hides automation indicators</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="package-example">
+                        <div class="example-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-button active" data-tab="stealth-install">Installation</button>
+                                <button class="tab-button" data-tab="stealth-usage">Usage</button>
+                                <button class="tab-button" data-tab="stealth-config">Configuration</button>
+                            </div>
+                            
+                            <div class="tab-contents">
+                                <div class="tab-content active" id="stealth-install">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">Installation</span>
+                                            <button class="run-example" data-example="stealth-install">
+                                                <i class="fas fa-terminal"></i> Install
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-bash"># Install the stealth plugin
+npm install puppeteer-extra-plugin-stealth
+
+# You'll also need puppeteer-extra
+npm install puppeteer-extra</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content" id="stealth-usage">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">stealth-usage.js</span>
+                                            <button class="run-example" data-example="stealth-usage">
+                                                <i class="fas fa-play"></i> Run Example
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+// Use stealth plugin with default settings
+puppeteer.use(StealthPlugin());
+
+async function stealthTest() {
+    const browser = await puppeteer.launch({ 
+        headless: false,
+        defaultViewport: null
+    });
+    
+    const page = await browser.newPage();
+    
+    // Test stealth capabilities
+    console.log('🔍 Testing bot detection...');
+    await page.goto('https://bot.sannysoft.com');
+    
+    // Wait for page to load
+    await page.waitForTimeout(5000);
+    
+    // Take screenshot of results
+    await page.screenshot({ 
+        path: 'bot-detection-test.png',
+        fullPage: true 
+    });
+    
+    // Check specific detection methods
+    const detectionResults = await page.evaluate(() => {
+        return {
+            webdriver: navigator.webdriver,
+            languages: navigator.languages,
+            plugins: navigator.plugins.length,
+            chrome: !!window.chrome,
+            permissions: !!navigator.permissions
+        };
+    });
+    
+    console.log('Detection results:', detectionResults);
+    
+    await browser.close();
+}
+
+stealthTest();</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content" id="stealth-config">
+                                    <div class="code-example">
+                                        <div class="code-header">
+                                            <span class="code-title">stealth-config.js</span>
+                                            <button class="run-example" data-example="stealth-config">
+                                                <i class="fas fa-play"></i> Run Example
+                                            </button>
+                                        </div>
+                                        <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+
+// Configure stealth plugin with custom settings
+puppeteer.use(StealthPlugin({
+    // Disable specific evasions if needed
+    enabledEvasions: new Set([
+        'chrome.app',
+        'chrome.csi',
+        'chrome.loadTimes',
+        'chrome.runtime',
+        'defaultArgs',
+        'iframe.contentWindow',
+        'media.codecs',
+        'navigator.hardwareConcurrency',
+        'navigator.languages',
+        'navigator.permissions',
+        'navigator.plugins',
+        'navigator.webdriver',
+        'sourceurl',
+        'user-agent-override',
+        'webgl.vendor',
+        'window.outerdimensions'
+    ])
+}));
+
+async function customStealthConfig() {
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--disable-gpu'
+        ]
+    });
+    
+    const page = await browser.newPage();
+    
+    // Set additional stealth measures
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    
+    await page.setViewport({ width: 1366, height: 768 });
+    
+    // Navigate to detection test
+    await page.goto('https://arh.antoinevastel.com/bots/areyouheadless');
+    
+    await page.waitForTimeout(3000);
+    
+    // Capture results
+    const isHeadless = await page.$eval('body', el => el.innerText);
+    console.log('Headless detection result:', isHeadless);
+    
+    await browser.close();
+}
+
+customStealthConfig();</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="package-links">
+                        <a href="https://www.npmjs.com/package/puppeteer-extra-plugin-stealth" class="package-link" target="_blank">
+                            <i class="fab fa-npm"></i> NPM Package
+                        </a>
+                        <a href="https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth" class="package-link" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Additional Resources Section -->
+            <div class="additional-resources">
+                <h2>Additional Resources</h2>
+                <div class="resource-grid">
+                    <div class="resource-item">
+                        <i class="fas fa-book"></i>
+                        <h3>Official Documentation</h3>
+                        <p>Complete Puppeteer API reference and guides</p>
+                        <a href="https://pptr.dev/" target="_blank">Visit Documentation</a>
+                    </div>
+                    <div class="resource-item">
+                        <i class="fas fa-code"></i>
+                        <h3>Example Repository</h3>
+                        <p>Real-world examples and code snippets</p>
+                        <a href="https://github.com/puppeteer/puppeteer/tree/main/examples" target="_blank">View Examples</a>
+                    </div>
+                    <div class="resource-item">
+                        <i class="fas fa-users"></i>
+                        <h3>Community</h3>
+                        <p>Join the Puppeteer community discussions</p>
+                        <a href="https://github.com/puppeteer/puppeteer/discussions" target="_blank">Join Discussion</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Load JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

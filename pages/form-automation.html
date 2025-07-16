@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Automation - Learn Puppeteer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="fas fa-robot"></i>
+                    <span>PuppeteerLearn</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li><a href="../index.html#tutorials" class="nav-link">Tutorials</a></li>
+                <li><a href="../index.html#examples" class="nav-link">Examples</a></li>
+                <li><a href="../index.html#resources" class="nav-link">Resources</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tutorial Content -->
+    <section class="tutorial-content">
+        <div class="container">
+            <div class="tutorial-header">
+                <h1>Form Automation with Puppeteer</h1>
+                <p class="tutorial-subtitle">Learn to automate form interactions, handle validations, and navigate complex multi-step forms</p>
+            </div>
+
+            <div class="tutorial-navigation">
+                <div class="nav-item">
+                    <span class="nav-number">01</span>
+                    <span class="nav-title">Basic Interactions</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">02</span>
+                    <span class="nav-title">Form Elements</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">03</span>
+                    <span class="nav-title">Validation & Errors</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">04</span>
+                    <span class="nav-title">Advanced Forms</span>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 1: Basic Form Interactions</h2>
+                <p>Master the fundamental form interactions: typing, clicking, and selecting elements.</p>
+                
+                <div class="interaction-examples">
+                    <div class="interaction-card">
+                        <h4>Text Input</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">text-input.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Type text into input field
+  await page.type('#username', 'john_doe');
+  
+  // Clear field and type new text
+  await page.click('#email', { clickCount: 3 }); // Select all
+  await page.type('#email', 'john@example.com');
+  
+  // Type with delay (simulate human typing)
+  await page.type('#message', 'Hello World!', { delay: 100 });
+  
+  // Focus on field and type
+  await page.focus('#password');
+  await page.keyboard.type('secretPassword123');
+  
+  // Type special characters
+  await page.type('#special', 'Price: $19.99 (20% off)');
+  
+  console.log('Text input completed');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="text-input">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="interaction-card">
+                        <h4>Button Interactions</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">button-clicks.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Simple click
+  await page.click('#submit-button');
+  
+  // Click with options
+  await page.click('#options-button', {
+    button: 'left',
+    clickCount: 1,
+    delay: 100
+  });
+  
+  // Right click (context menu)
+  await page.click('#context-menu', { button: 'right' });
+  
+  // Double click
+  await page.click('#double-click-area', { clickCount: 2 });
+  
+  // Click at specific coordinates
+  await page.mouse.click(100, 200);
+  
+  // Hover before click
+  await page.hover('#hover-button');
+  await page.click('#hover-button');
+  
+  // Wait for button to be clickable
+  await page.waitForSelector('#dynamic-button:not([disabled])');
+  await page.click('#dynamic-button');
+  
+  console.log('Button interactions completed');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="button-clicks">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="interaction-card">
+                        <h4>Keyboard Shortcuts</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">keyboard-shortcuts.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Select all text (Ctrl+A)
+  await page.keyboard.down('Control');
+  await page.keyboard.press('KeyA');
+  await page.keyboard.up('Control');
+  
+  // Copy text (Ctrl+C)
+  await page.keyboard.down('Control');
+  await page.keyboard.press('KeyC');
+  await page.keyboard.up('Control');
+  
+  // Paste text (Ctrl+V)
+  await page.focus('#another-field');
+  await page.keyboard.down('Control');
+  await page.keyboard.press('KeyV');
+  await page.keyboard.up('Control');
+  
+  // Tab navigation
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  
+  // Enter key
+  await page.keyboard.press('Enter');
+  
+  // Escape key
+  await page.keyboard.press('Escape');
+  
+  // Arrow keys
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('ArrowUp');
+  
+  console.log('Keyboard shortcuts completed');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="keyboard-shortcuts">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 2: Working with Different Form Elements</h2>
+                <p>Learn to handle various form elements including dropdowns, checkboxes, radio buttons, and file uploads.</p>
+                
+                <div class="form-elements">
+                    <div class="element-card">
+                        <h4>Dropdown/Select Elements</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">dropdown-select.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Select by value
+  await page.select('#country', 'usa');
+  
+  // Select by visible text
+  await page.select('#language', 'english');
+  
+  // Select multiple options
+  await page.select('#skills', ['javascript', 'python', 'react']);
+  
+  // Custom dropdown handling
+  await page.click('#custom-dropdown-trigger');
+  await page.waitForSelector('#custom-dropdown-options');
+  await page.click('#custom-dropdown-options li[data-value="option1"]');
+  
+  // React Select component
+  await page.click('.react-select__control');
+  await page.waitForSelector('.react-select__option');
+  await page.click('.react-select__option:first-child');
+  
+  // Material UI Select
+  await page.click('[data-testid="select-trigger"]');
+  await page.waitForSelector('[role="listbox"]');
+  await page.click('[role="option"][data-value="value1"]');
+  
+  // Get selected value
+  const selectedValue = await page.$eval('#country', el => el.value);
+  console.log('Selected country:', selectedValue);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="dropdown-select">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <h4>Checkboxes & Radio Buttons</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">checkbox-radio.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Check/uncheck checkbox
+  await page.click('#newsletter-checkbox');
+  
+  // Check if checkbox is checked
+  const isChecked = await page.$eval('#newsletter-checkbox', el => el.checked);
+  console.log('Newsletter checkbox is checked:', isChecked);
+  
+  // Check multiple checkboxes
+  const checkboxes = ['#option1', '#option2', '#option3'];
+  for (const checkbox of checkboxes) {
+    await page.click(checkbox);
+  }
+  
+  // Radio button selection
+  await page.click('#gender-male');
+  
+  // Get selected radio button value
+  const selectedGender = await page.$eval('input[name="gender"]:checked', el => el.value);
+  console.log('Selected gender:', selectedGender);
+  
+  // Handle custom checkbox/radio designs
+  await page.click('.custom-checkbox-label');
+  await page.click('.custom-radio-label');
+  
+  // Toggle checkbox state
+  const toggleCheckbox = async (selector) => {
+    const isCurrentlyChecked = await page.$eval(selector, el => el.checked);
+    if (!isCurrentlyChecked) {
+      await page.click(selector);
+    }
+  };
+  
+  await toggleCheckbox('#terms-checkbox');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="checkbox-radio">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <h4>File Upload</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">file-upload.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+const path = require('path');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/upload');
+  
+  // Upload single file
+  const filePath = path.join(__dirname, 'test-file.txt');
+  await page.waitForSelector('#file-input');
+  
+  const fileInput = await page.$('#file-input');
+  await fileInput.uploadFile(filePath);
+  
+  // Upload multiple files
+  const multiplePaths = [
+    path.join(__dirname, 'file1.txt'),
+    path.join(__dirname, 'file2.txt'),
+    path.join(__dirname, 'file3.txt')
+  ];
+  
+  const multipleFileInput = await page.$('#multiple-file-input');
+  await multipleFileInput.uploadFile(...multiplePaths);
+  
+  // Handle drag and drop upload
+  const dragDropArea = await page.$('#drag-drop-area');
+  const dataTransfer = await page.evaluateHandle(() => new DataTransfer());
+  
+  // Simulate drag and drop
+  await page.dispatchEvent('#drag-drop-area', 'dragenter', { dataTransfer });
+  await page.dispatchEvent('#drag-drop-area', 'dragover', { dataTransfer });
+  await page.dispatchEvent('#drag-drop-area', 'drop', { dataTransfer });
+  
+  // Wait for upload progress
+  await page.waitForSelector('.upload-progress');
+  
+  // Wait for upload completion
+  await page.waitForSelector('.upload-complete', { timeout: 30000 });
+  
+  console.log('File upload completed');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="file-upload">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="element-card">
+                        <h4>Date & Time Inputs</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">date-time-inputs.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Date input
+  await page.type('#date-input', '2024-12-25');
+  
+  // Time input
+  await page.type('#time-input', '14:30');
+  
+  // DateTime-local input
+  await page.type('#datetime-input', '2024-12-25T14:30');
+  
+  // Month input
+  await page.type('#month-input', '2024-12');
+  
+  // Week input
+  await page.type('#week-input', '2024-W52');
+  
+  // Handle date picker widgets
+  await page.click('#date-picker-trigger');
+  await page.waitForSelector('.date-picker-calendar');
+  
+  // Select specific date in calendar
+  await page.click('.date-picker-calendar [data-date="2024-12-25"]');
+  
+  // Material UI DatePicker
+  await page.click('[data-testid="date-picker-input"]');
+  await page.waitForSelector('.MuiPickersDay-root');
+  await page.click('.MuiPickersDay-root[data-day="25"]');
+  
+  // React DatePicker
+  await page.click('.react-datepicker__input-container input');
+  await page.waitForSelector('.react-datepicker__day');
+  await page.click('.react-datepicker__day--025');
+  
+  console.log('Date and time inputs completed');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="date-time-inputs">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 3: Handling Validation & Errors</h2>
+                <p>Learn to handle form validation, error messages, and retry logic.</p>
+                
+                <div class="validation-examples">
+                    <div class="validation-card">
+                        <h4>Form Validation Handling</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">form-validation.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Function to check for validation errors
+  const checkValidationErrors = async () => {
+    const errors = await page.$$eval('.error-message', elements => 
+      elements.map(el => el.textContent.trim())
+    );
+    return errors;
+  };
+  
+  // Fill form with invalid data first
+  await page.type('#email', 'invalid-email');
+  await page.type('#password', '123'); // Too short
+  await page.click('#submit-button');
+  
+  // Wait for validation errors to appear
+  await page.waitForSelector('.error-message');
+  
+  // Check validation errors
+  const validationErrors = await checkValidationErrors();
+  console.log('Validation errors found:', validationErrors);
+  
+  // Fix validation errors
+  await page.click('#email', { clickCount: 3 });
+  await page.type('#email', 'valid@email.com');
+  
+  await page.click('#password', { clickCount: 3 });
+  await page.type('#password', 'strongPassword123!');
+  
+  // Check if errors are cleared
+  await page.waitForFunction(() => {
+    const errors = document.querySelectorAll('.error-message');
+    return errors.length === 0;
+  });
+  
+  // Submit form again
+  await page.click('#submit-button');
+  
+  // Wait for success message or redirect
+  try {
+    await page.waitForSelector('.success-message', { timeout: 5000 });
+    console.log('Form submitted successfully');
+  } catch (error) {
+    console.log('Form submission failed or redirected');
+  }
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="form-validation">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="validation-card">
+                        <h4>Real-time Validation</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">realtime-validation.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  // Monitor real-time validation
+  const monitorValidation = async (fieldSelector, validationSelector) => {
+    let isValid = false;
+    
+    while (!isValid) {
+      // Get current validation state
+      const validationMessage = await page.$eval(validationSelector, 
+        el => el.textContent.trim()
+      ).catch(() => '');
+      
+      const hasError = await page.$(validationSelector + '.error') !== null;
+      
+      if (!hasError && validationMessage === '') {
+        isValid = true;
+        console.log(`Field ${fieldSelector} is now valid`);
+      } else {
+        console.log(`Field ${fieldSelector} validation: ${validationMessage}`);
+        
+        // Wait a bit before checking again
+        await page.waitForTimeout(500);
+      }
+    }
+  };
+  
+  // Type email and monitor validation
+  await page.focus('#email');
+  await page.type('#email', 'test');
+  
+  // Wait for validation to trigger
+  await page.waitForTimeout(500);
+  
+  // Continue typing until valid
+  await page.type('#email', '@example.com');
+  
+  // Wait for validation to pass
+  await page.waitForFunction(() => {
+    const emailField = document.querySelector('#email');
+    const validationMessage = document.querySelector('#email-validation');
+    
+    return emailField.checkValidity() && 
+           (!validationMessage || !validationMessage.textContent.trim());
+  });
+  
+  console.log('Email validation passed');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="realtime-validation">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="validation-card">
+                        <h4>CAPTCHA & Security</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">captcha-handling.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form-with-captcha');
+  
+  // Handle reCAPTCHA
+  const handleRecaptcha = async () => {
+    // Check if reCAPTCHA is present
+    const recaptchaFrame = await page.$('iframe[src*="recaptcha"]');
+    
+    if (recaptchaFrame) {
+      console.log('reCAPTCHA detected');
+      
+      // Switch to reCAPTCHA frame
+      const frame = await recaptchaFrame.contentFrame();
+      
+      // Click the checkbox
+      await frame.click('.recaptcha-checkbox');
+      
+      // Wait for verification or challenge
+      await page.waitForTimeout(3000);
+      
+      // Check if challenge appeared
+      const challengeFrame = await page.$('iframe[src*="recaptcha"][src*="bframe"]');
+      
+      if (challengeFrame) {
+        console.log('reCAPTCHA challenge appeared - manual intervention needed');
+        
+        // Pause for manual solving
+        await page.waitForSelector('.recaptcha-checkbox[aria-checked="true"]', 
+          { timeout: 60000 }
+        );
+      }
+    }
+  };
+  
+  // Handle simple image CAPTCHA
+  const handleImageCaptcha = async () => {
+    const captchaImage = await page.$('#captcha-image');
+    
+    if (captchaImage) {
+      console.log('Image CAPTCHA detected');
+      
+      // Save CAPTCHA image
+      await captchaImage.screenshot({ path: 'captcha.png' });
+      
+      // Here you would typically:
+      // 1. Use OCR to read the CAPTCHA
+      // 2. Use a CAPTCHA solving service
+      // 3. Ask for manual input
+      
+      // For demo, we'll simulate manual input
+      const captchaText = 'DEMO123'; // Would be from OCR or manual input
+      await page.type('#captcha-input', captchaText);
+    }
+  };
+  
+  // Fill form
+  await page.type('#username', 'testuser');
+  await page.type('#email', 'test@example.com');
+  
+  // Handle security measures
+  await handleRecaptcha();
+  await handleImageCaptcha();
+  
+  // Submit form
+  await page.click('#submit-button');
+  
+  // Wait for response
+  await page.waitForNavigation({ timeout: 10000 });
+  
+  console.log('Form with security measures submitted');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="captcha-handling">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Step 4: Advanced Form Techniques</h2>
+                <p>Master complex form scenarios including multi-step forms, dynamic fields, and form testing.</p>
+                
+                <div class="advanced-examples">
+                    <div class="advanced-card">
+                        <h4>Multi-Step Forms</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">multi-step-form.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/multi-step-form');
+  
+  // Step 1: Personal Information
+  console.log('Filling Step 1: Personal Information');
+  
+  await page.type('#first-name', 'John');
+  await page.type('#last-name', 'Doe');
+  await page.type('#email', 'john.doe@example.com');
+  await page.type('#phone', '+1234567890');
+  
+  // Validate step 1
+  const step1Valid = await page.$eval('#step1-validation', el => 
+    el.classList.contains('valid')
+  );
+  
+  if (!step1Valid) {
+    console.log('Step 1 validation failed');
+    return;
+  }
+  
+  // Go to step 2
+  await page.click('#next-step-1');
+  await page.waitForSelector('#step-2.active');
+  
+  // Step 2: Address Information
+  console.log('Filling Step 2: Address Information');
+  
+  await page.type('#street-address', '123 Main St');
+  await page.type('#city', 'New York');
+  await page.select('#state', 'NY');
+  await page.type('#zip-code', '10001');
+  await page.select('#country', 'USA');
+  
+  // Go to step 3
+  await page.click('#next-step-2');
+  await page.waitForSelector('#step-3.active');
+  
+  // Step 3: Payment Information
+  console.log('Filling Step 3: Payment Information');
+  
+  await page.type('#card-number', '4111111111111111');
+  await page.type('#expiry-date', '12/25');
+  await page.type('#cvv', '123');
+  await page.type('#cardholder-name', 'John Doe');
+  
+  // Review step
+  await page.click('#review-step');
+  await page.waitForSelector('#review-section');
+  
+  // Verify information
+  const reviewData = await page.evaluate(() => {
+    return {
+      name: document.querySelector('#review-name').textContent,
+      email: document.querySelector('#review-email').textContent,
+      address: document.querySelector('#review-address').textContent,
+      card: document.querySelector('#review-card').textContent
+    };
+  });
+  
+  console.log('Review data:', reviewData);
+  
+  // Submit form
+  await page.click('#final-submit');
+  
+  // Wait for confirmation
+  await page.waitForSelector('#confirmation-message');
+  
+  const confirmationText = await page.$eval('#confirmation-message', 
+    el => el.textContent
+  );
+  
+  console.log('Form submitted successfully:', confirmationText);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="multi-step-form">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="advanced-card">
+                        <h4>Dynamic Form Fields</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">dynamic-fields.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/dynamic-form');
+  
+  // Handle conditional fields
+  await page.select('#user-type', 'business');
+  
+  // Wait for business fields to appear
+  await page.waitForSelector('#business-fields', { visible: true });
+  
+  await page.type('#company-name', 'Tech Corp');
+  await page.type('#tax-id', '12-3456789');
+  
+  // Add dynamic repeating fields
+  const addSkill = async (skillName, level) => {
+    await page.click('#add-skill-button');
+    
+    // Wait for new skill field to appear
+    await page.waitForSelector('.skill-item:last-child .skill-name');
+    
+    const skillItems = await page.$$('.skill-item');
+    const lastSkillItem = skillItems[skillItems.length - 1];
+    
+    await lastSkillItem.$eval('.skill-name', (el, name) => {
+      el.value = name;
+    }, skillName);
+    
+    await lastSkillItem.$eval('.skill-level', (el, lvl) => {
+      el.value = lvl;
+    }, level);
+  };
+  
+  // Add multiple skills
+  await addSkill('JavaScript', 'Expert');
+  await addSkill('Python', 'Intermediate');
+  await addSkill('React', 'Advanced');
+  
+  // Handle dependent dropdowns
+  await page.select('#category', 'technology');
+  
+  // Wait for subcategory options to load
+  await page.waitForFunction(() => {
+    const subcategory = document.querySelector('#subcategory');
+    return subcategory && subcategory.options.length > 1;
+  });
+  
+  await page.select('#subcategory', 'web-development');
+  
+  // Wait for specific technology options
+  await page.waitForFunction(() => {
+    const technology = document.querySelector('#technology');
+    return technology && technology.options.length > 1;
+  });
+  
+  await page.select('#technology', 'frontend');
+  
+  // Handle auto-complete fields
+  await page.type('#location', 'New Y');
+  await page.waitForSelector('#location-suggestions');
+  await page.click('#location-suggestions li:first-child');
+  
+  // Handle calculated fields
+  await page.type('#quantity', '5');
+  await page.type('#price', '10.50');
+  
+  // Wait for total to be calculated
+  await page.waitForFunction(() => {
+    const total = document.querySelector('#total');
+    return total && total.value === '52.50';
+  });
+  
+  console.log('Dynamic form fields handled successfully');
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="dynamic-fields">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="advanced-card">
+                        <h4>Form Testing Framework</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-title">form-testing.js</span>
+                            </div>
+                            <pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class FormTester {
+  constructor(page) {
+    this.page = page;
+    this.testResults = [];
+  }
+  
+  async testField(selector, testCases) {
+    const results = [];
+    
+    for (const testCase of testCases) {
+      console.log(`Testing ${selector} with: ${testCase.input}`);
+      
+      try {
+        // Clear field
+        await this.page.click(selector, { clickCount: 3 });
+        await this.page.type(selector, testCase.input);
+        
+        // Trigger validation
+        await this.page.keyboard.press('Tab');
+        await this.page.waitForTimeout(500);
+        
+        // Check validation result
+        const hasError = await this.page.$(testCase.errorSelector) !== null;
+        const errorMessage = hasError ? 
+          await this.page.$eval(testCase.errorSelector, el => el.textContent) : '';
+        
+        const result = {
+          input: testCase.input,
+          expectedValid: testCase.expectedValid,
+          actualValid: !hasError,
+          errorMessage: errorMessage,
+          passed: testCase.expectedValid === !hasError
+        };
+        
+        results.push(result);
+        
+        if (!result.passed) {
+          console.log(`❌ Test failed for ${selector}: ${JSON.stringify(result)}`);
+        } else {
+          console.log(`✅ Test passed for ${selector}`);
+        }
+        
+      } catch (error) {
+        results.push({
+          input: testCase.input,
+          error: error.message,
+          passed: false
+        });
+      }
+    }
+    
+    return results;
+  }
+  
+  async testForm(formTests) {
+    const allResults = {};
+    
+    for (const [fieldSelector, testCases] of Object.entries(formTests)) {
+      allResults[fieldSelector] = await this.testField(fieldSelector, testCases);
+    }
+    
+    return allResults;
+  }
+  
+  generateReport(results) {
+    let totalTests = 0;
+    let passedTests = 0;
+    
+    console.log('\n=== FORM TESTING REPORT ===');
+    
+    for (const [field, fieldResults] of Object.entries(results)) {
+      console.log(`\nField: ${field}`);
+      
+      fieldResults.forEach(result => {
+        totalTests++;
+        if (result.passed) passedTests++;
+        
+        const status = result.passed ? '✅' : '❌';
+        console.log(`  ${status} Input: "${result.input}" | Expected: ${result.expectedValid ? 'Valid' : 'Invalid'} | Actual: ${result.actualValid ? 'Valid' : 'Invalid'}`);
+        
+        if (result.error) {
+          console.log(`    Error: ${result.error}`);
+        }
+      });
+    }
+    
+    console.log(`\n=== SUMMARY ===`);
+    console.log(`Total Tests: ${totalTests}`);
+    console.log(`Passed: ${passedTests}`);
+    console.log(`Failed: ${totalTests - passedTests}`);
+    console.log(`Success Rate: ${((passedTests / totalTests) * 100).toFixed(2)}%`);
+  }
+}
+
+// Usage
+(async () => {
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  
+  await page.goto('https://example.com/form');
+  
+  const tester = new FormTester(page);
+  
+  const formTests = {
+    '#email': [
+      { input: 'valid@example.com', expectedValid: true, errorSelector: '#email-error' },
+      { input: 'invalid-email', expectedValid: false, errorSelector: '#email-error' },
+      { input: '', expectedValid: false, errorSelector: '#email-error' }
+    ],
+    '#password': [
+      { input: 'StrongPass123!', expectedValid: true, errorSelector: '#password-error' },
+      { input: '123', expectedValid: false, errorSelector: '#password-error' },
+      { input: 'weakpass', expectedValid: false, errorSelector: '#password-error' }
+    ],
+    '#phone': [
+      { input: '+1234567890', expectedValid: true, errorSelector: '#phone-error' },
+      { input: '123', expectedValid: false, errorSelector: '#phone-error' },
+      { input: 'abc', expectedValid: false, errorSelector: '#phone-error' }
+    ]
+  };
+  
+  const results = await tester.testForm(formTests);
+  tester.generateReport(results);
+  
+  await browser.close();
+})();</code></pre>
+                        </div>
+                        <div class="run-example-section">
+                            <button class="btn btn-primary run-example" data-example="form-testing">
+                                <i class="fas fa-play"></i> Run Example
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-step">
+                <h2>Best Practices for Form Automation</h2>
+                <div class="best-practices">
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>Wait for Form Readiness</h4>
+                            <p>Always wait for forms to be fully loaded and interactive before interacting</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Wait for form to be ready
+await page.waitForSelector('#myform', { visible: true });
+await page.waitForSelector('#myform input:not([disabled])');
+
+// Wait for dynamic content to load
+await page.waitForFunction(() => {
+  return document.querySelector('#myform').getAttribute('data-ready') === 'true';
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>Handle Form Security</h4>
+                            <p>Respect rate limits, handle CAPTCHAs, and avoid overwhelming servers</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Add delays to simulate human behavior
+await page.type('#input', 'text', { delay: 100 });
+await page.waitForTimeout(1000);
+
+// Handle rate limiting
+const submitWithRetry = async (maxRetries = 3) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await page.click('#submit');
+      return;
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await page.waitForTimeout(5000 * (i + 1));
+    }
+  }
+};</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-bug"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>Error Handling & Recovery</h4>
+                            <p>Implement robust error handling and recovery mechanisms</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">const fillFormSafely = async (formData) => {
+  try {
+    for (const [selector, value] of Object.entries(formData)) {
+      await page.waitForSelector(selector, { timeout: 5000 });
+      await page.type(selector, value);
+    }
+  } catch (error) {
+    console.error('Form filling failed:', error);
+    // Take screenshot for debugging
+    await page.screenshot({ path: 'form-error.png' });
+    throw error;
+  }
+};</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-item">
+                        <div class="practice-icon">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                        <div class="practice-content">
+                            <h4>Validate Form Submission</h4>
+                            <p>Always verify that forms were submitted successfully</p>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// Submit and verify
+await page.click('#submit-button');
+
+// Wait for success indicators
+const success = await Promise.race([
+  page.waitForSelector('.success-message').then(() => true),
+  page.waitForSelector('.error-message').then(() => false),
+  page.waitForNavigation().then(() => true)
+]);
+
+if (success) {
+  console.log('Form submitted successfully');
+} else {
+  console.log('Form submission failed');
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutorial-navigation-footer">
+                <a href="web-scraping.html" class="btn btn-secondary">← Previous: Web Scraping</a>
+                <a href="advanced-techniques.html" class="btn btn-primary">Next: Advanced Techniques →</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

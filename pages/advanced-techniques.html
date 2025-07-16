@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Techniques - Learn Puppeteer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html" style="color: inherit; text-decoration: none; display: flex; align-items: center;">
+                    <i class="fas fa-robot"></i>
+                    <span>PuppeteerLearn</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#features" class="nav-link">Features</a></li>
+                <li><a href="../index.html#tutorials" class="nav-link">Tutorials</a></li>
+                <li><a href="../index.html#examples" class="nav-link">Examples</a></li>
+                <li><a href="../index.html#resources" class="nav-link">Resources</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tutorial Content -->
+    <section class="tutorial-content">
+        <div class="container">
+            <div class="tutorial-header">
+                <h1>Advanced Puppeteer Techniques</h1>
+                <p class="tutorial-subtitle">Master performance optimization, parallel execution, network interception, and enterprise-level automation patterns</p>
+            </div>
+
+            <div class="tutorial-navigation">
+                <div class="nav-item">
+                    <span class="nav-number">01</span>
+                    <span class="nav-title">Performance & Optimization</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">02</span>
+                    <span class="nav-title">Parallel Execution</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">03</span>
+                    <span class="nav-title">Network Interception</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-number">04</span>
+                    <span class="nav-title">Advanced Patterns</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Performance & Optimization -->
+            <div class="tutorial-step">
+                <h2>Step 1: Performance & Optimization</h2>
+                <p>Learn to optimize your Puppeteer scripts for speed, memory usage, and reliability.</p>
+
+                <div class="example-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="browser-optimization">Browser Optimization</button>
+                        <button class="tab-button" data-tab="memory-management">Memory Management</button>
+                        <button class="tab-button" data-tab="resource-blocking">Resource Blocking</button>
+                    </div>
+                    
+                    <div class="tab-contents">
+                        <div class="tab-content active" id="browser-optimization">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">browser-optimization.js</span>
+                                    <button class="run-example" data-example="browser-optimization">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+// Optimized browser launch configuration
+const launchOptimizedBrowser = async () => {
+    const browser = await puppeteer.launch({
+        headless: 'new', // Use new headless mode
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu',
+            '--disable-background-networking',
+            '--disable-default-apps',
+            '--disable-extensions',
+            '--disable-sync',
+            '--disable-translate',
+            '--hide-scrollbars',
+            '--metrics-recording-only',
+            '--mute-audio',
+            '--no-default-browser-check',
+            '--safebrowsing-disable-auto-update',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding'
+        ]
+    });
+    
+    return browser;
+};
+
+// Optimized page configuration
+const createOptimizedPage = async (browser) => {
+    const page = await browser.newPage();
+    
+    // Set viewport for consistent results
+    await page.setViewport({ width: 1366, height: 768 });
+    
+    // Set user agent to avoid bot detection
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    
+    // Optimize timeouts
+    page.setDefaultTimeout(30000);
+    page.setDefaultNavigationTimeout(30000);
+    
+    // Block unnecessary resources
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        const resourceType = req.resourceType();
+        if (resourceType === 'image' || resourceType === 'font' || resourceType === 'stylesheet') {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
+    
+    return page;
+};
+
+// Usage example
+(async () => {
+    const browser = await launchOptimizedBrowser();
+    const page = await createOptimizedPage(browser);
+    
+    console.time('Page Load');
+    await page.goto('https://example.com');
+    console.timeEnd('Page Load');
+    
+    await browser.close();
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="memory-management">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">memory-management.js</span>
+                                    <button class="run-example" data-example="memory-management">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class MemoryEfficientScraper {
+    constructor() {
+        this.browser = null;
+        this.pagePool = [];
+        this.maxPages = 5;
+    }
+    
+    async initialize() {
+        this.browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+        
+        // Pre-create page pool
+        for (let i = 0; i < this.maxPages; i++) {
+            const page = await this.browser.newPage();
+            this.pagePool.push(page);
+        }
+    }
+    
+    async getPage() {
+        if (this.pagePool.length > 0) {
+            return this.pagePool.pop();
+        }
+        
+        // If no pages available, create a new one
+        return await this.browser.newPage();
+    }
+    
+    async releasePage(page) {
+        try {
+            // Clear page state
+            await page.evaluate(() => {
+                // Clear any intervals/timeouts
+                const highestTimeoutId = setTimeout(() => {});
+                for (let i = 0; i < highestTimeoutId; i++) {
+                    clearTimeout(i);
+                }
+                
+                // Clear any event listeners
+                window.removeEventListener = () => {};
+                
+                // Clear localStorage and sessionStorage
+                localStorage.clear();
+                sessionStorage.clear();
+            });
+            
+            // Navigate to about:blank to free memory
+            await page.goto('about:blank');
+            
+            // Return to pool if under limit
+            if (this.pagePool.length < this.maxPages) {
+                this.pagePool.push(page);
+            } else {
+                await page.close();
+            }
+        } catch (error) {
+            console.error('Error releasing page:', error);
+            await page.close();
+        }
+    }
+    
+    async scrapeWithMemoryManagement(urls) {
+        const results = [];
+        
+        for (const url of urls) {
+            const page = await this.getPage();
+            
+            try {
+                await page.goto(url, { waitUntil: 'networkidle2' });
+                
+                const data = await page.evaluate(() => ({
+                    title: document.title,
+                    url: window.location.href,
+                    timestamp: new Date().toISOString()
+                }));
+                
+                results.push(data);
+                
+                // Monitor memory usage
+                const metrics = await page.metrics();
+                console.log(`Memory usage for ${url}:`, {
+                    JSHeapUsedSize: Math.round(metrics.JSHeapUsedSize / 1024 / 1024) + 'MB',
+                    JSHeapTotalSize: Math.round(metrics.JSHeapTotalSize / 1024 / 1024) + 'MB'
+                });
+                
+            } catch (error) {
+                console.error(`Error scraping ${url}:`, error);
+            } finally {
+                await this.releasePage(page);
+            }
+        }
+        
+        return results;
+    }
+    
+    async cleanup() {
+        // Close all pages in pool
+        for (const page of this.pagePool) {
+            await page.close();
+        }
+        
+        if (this.browser) {
+            await this.browser.close();
+        }
+    }
+}
+
+// Usage
+(async () => {
+    const scraper = new MemoryEfficientScraper();
+    
+    try {
+        await scraper.initialize();
+        
+        const urls = [
+            'https://example1.com',
+            'https://example2.com',
+            'https://example3.com'
+        ];
+        
+        const results = await scraper.scrapeWithMemoryManagement(urls);
+        console.log('Results:', results);
+        
+    } finally {
+        await scraper.cleanup();
+    }
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="resource-blocking">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">resource-blocking.js</span>
+                                    <button class="run-example" data-example="resource-blocking">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class ResourceBlocker {
+    constructor() {
+        this.blockedResources = new Set([
+            'image',
+            'stylesheet',
+            'font',
+            'media'
+        ]);
+        
+        this.blockedDomains = new Set([
+            'google-analytics.com',
+            'googletagmanager.com',
+            'facebook.com',
+            'twitter.com',
+            'doubleclick.net',
+            'googlesyndication.com'
+        ]);
+    }
+    
+    shouldBlockRequest(request) {
+        const url = request.url();
+        const resourceType = request.resourceType();
+        
+        // Block by resource type
+        if (this.blockedResources.has(resourceType)) {
+            return true;
+        }
+        
+        // Block by domain
+        for (const domain of this.blockedDomains) {
+            if (url.includes(domain)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    async setupRequestInterception(page) {
+        await page.setRequestInterception(true);
+        
+        page.on('request', (request) => {
+            if (this.shouldBlockRequest(request)) {
+                console.log(`Blocked: ${request.resourceType()} - ${request.url()}`);
+                request.abort();
+            } else {
+                request.continue();
+            }
+        });
+        
+        // Track blocked vs allowed requests
+        let blockedCount = 0;
+        let allowedCount = 0;
+        
+        page.on('requestfailed', (request) => {
+            if (request.failure().errorText === 'net::ERR_BLOCKED_BY_CLIENT') {
+                blockedCount++;
+            }
+        });
+        
+        page.on('response', () => {
+            allowedCount++;
+        });
+        
+        // Log statistics periodically
+        setInterval(() => {
+            console.log(`Requests - Blocked: ${blockedCount}, Allowed: ${allowedCount}`);
+        }, 5000);
+    }
+    
+    async optimizedPageLoad(url) {
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        
+        await this.setupRequestInterception(page);
+        
+        // Set cache to disk to avoid re-downloading
+        await page.setCacheEnabled(true);
+        
+        console.time('Page Load with Blocking');
+        await page.goto(url, { waitUntil: 'networkidle2' });
+        console.timeEnd('Page Load with Blocking');
+        
+        // Compare with normal page load
+        const normalPage = await browser.newPage();
+        console.time('Normal Page Load');
+        await normalPage.goto(url, { waitUntil: 'networkidle2' });
+        console.timeEnd('Normal Page Load');
+        
+        await browser.close();
+    }
+}
+
+// Advanced resource blocking with custom rules
+class SmartResourceBlocker extends ResourceBlocker {
+    constructor() {
+        super();
+        this.allowedImageHosts = new Set([
+            'cdn.example.com',
+            'images.example.com'
+        ]);
+    }
+    
+    shouldBlockRequest(request) {
+        const url = request.url();
+        const resourceType = request.resourceType();
+        
+        // Allow images from specific hosts
+        if (resourceType === 'image') {
+            for (const host of this.allowedImageHosts) {
+                if (url.includes(host)) {
+                    return false;
+                }
+            }
+        }
+        
+        return super.shouldBlockRequest(request);
+    }
+    
+    async setupAdvancedBlocking(page) {
+        await page.setRequestInterception(true);
+        
+        page.on('request', (request) => {
+            const resourceType = request.resourceType();
+            const url = request.url();
+            
+            // Block tracking scripts
+            if (resourceType === 'script' && 
+                (url.includes('analytics') || url.includes('tracking'))) {
+                request.abort();
+                return;
+            }
+            
+            // Allow critical resources
+            if (resourceType === 'document' || 
+                resourceType === 'xhr' || 
+                resourceType === 'fetch') {
+                request.continue();
+                return;
+            }
+            
+            // Custom blocking logic
+            if (this.shouldBlockRequest(request)) {
+                request.abort();
+            } else {
+                request.continue();
+            }
+        });
+    }
+}
+
+// Usage
+(async () => {
+    const blocker = new SmartResourceBlocker();
+    await blocker.optimizedPageLoad('https://example.com');
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Parallel Execution -->
+            <div class="tutorial-step">
+                <h2>Step 2: Parallel Execution & Concurrency</h2>
+                <p>Scale your automation by running multiple browser instances and pages concurrently.</p>
+
+                <div class="example-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="parallel-pages">Parallel Pages</button>
+                        <button class="tab-button" data-tab="worker-pool">Worker Pool</button>
+                        <button class="tab-button" data-tab="cluster-mode">Cluster Mode</button>
+                    </div>
+                    
+                    <div class="tab-contents">
+                        <div class="tab-content active" id="parallel-pages">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">parallel-pages.js</span>
+                                    <button class="run-example" data-example="parallel-pages">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class ParallelScraper {
+    constructor(maxConcurrency = 5) {
+        this.maxConcurrency = maxConcurrency;
+        this.browser = null;
+        this.activeTasks = new Set();
+    }
+    
+    async initialize() {
+        this.browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+    }
+    
+    async scrapeUrl(url) {
+        const page = await this.browser.newPage();
+        
+        try {
+            await page.goto(url, { waitUntil: 'networkidle2' });
+            
+            const data = await page.evaluate(() => ({
+                title: document.title,
+                url: window.location.href,
+                links: Array.from(document.querySelectorAll('a')).length,
+                images: Array.from(document.querySelectorAll('img')).length,
+                timestamp: new Date().toISOString()
+            }));
+            
+            console.log(`Scraped: ${url} - ${data.title}`);
+            return data;
+            
+        } catch (error) {
+            console.error(`Error scraping ${url}:`, error.message);
+            return { url, error: error.message };
+        } finally {
+            await page.close();
+        }
+    }
+    
+    async scrapeParallel(urls) {
+        const results = [];
+        
+        // Process URLs in batches
+        for (let i = 0; i < urls.length; i += this.maxConcurrency) {
+            const batch = urls.slice(i, i + this.maxConcurrency);
+            
+            console.log(`Processing batch ${Math.floor(i / this.maxConcurrency) + 1}: ${batch.length} URLs`);
+            
+            const batchPromises = batch.map(url => this.scrapeUrl(url));
+            const batchResults = await Promise.all(batchPromises);
+            
+            results.push(...batchResults);
+            
+            // Optional: Add delay between batches
+            if (i + this.maxConcurrency < urls.length) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+        
+        return results;
+    }
+    
+    async scrapeWithProgressTracking(urls) {
+        let completed = 0;
+        const total = urls.length;
+        
+        const results = await Promise.all(
+            urls.map(async (url) => {
+                const result = await this.scrapeUrl(url);
+                completed++;
+                
+                const progress = Math.round((completed / total) * 100);
+                console.log(`Progress: ${progress}% (${completed}/${total})`);
+                
+                return result;
+            })
+        );
+        
+        return results;
+    }
+    
+    async cleanup() {
+        if (this.browser) {
+            await this.browser.close();
+        }
+    }
+}
+
+// Advanced parallel processing with rate limiting
+class RateLimitedScraper extends ParallelScraper {
+    constructor(maxConcurrency = 5, requestsPerSecond = 2) {
+        super(maxConcurrency);
+        this.requestsPerSecond = requestsPerSecond;
+        this.lastRequestTime = 0;
+    }
+    
+    async rateLimit() {
+        const now = Date.now();
+        const timeSinceLastRequest = now - this.lastRequestTime;
+        const minInterval = 1000 / this.requestsPerSecond;
+        
+        if (timeSinceLastRequest < minInterval) {
+            const delay = minInterval - timeSinceLastRequest;
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        
+        this.lastRequestTime = Date.now();
+    }
+    
+    async scrapeUrl(url) {
+        await this.rateLimit();
+        return super.scrapeUrl(url);
+    }
+}
+
+// Usage examples
+(async () => {
+    const scraper = new RateLimitedScraper(3, 1); // 3 concurrent, 1 req/sec
+    
+    try {
+        await scraper.initialize();
+        
+        const urls = [
+            'https://example1.com',
+            'https://example2.com',
+            'https://example3.com',
+            'https://example4.com',
+            'https://example5.com'
+        ];
+        
+        console.time('Parallel Scraping');
+        const results = await scraper.scrapeParallel(urls);
+        console.timeEnd('Parallel Scraping');
+        
+        console.log(`Successfully scraped ${results.length} URLs`);
+        
+    } finally {
+        await scraper.cleanup();
+    }
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="worker-pool">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">worker-pool.js</span>
+                                    <button class="run-example" data-example="worker-pool">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
+
+// Main thread - Worker pool manager
+class WorkerPool {
+    constructor(maxWorkers = 4) {
+        this.maxWorkers = maxWorkers;
+        this.workers = [];
+        this.taskQueue = [];
+        this.activeWorkers = 0;
+    }
+    
+    async initialize() {
+        for (let i = 0; i < this.maxWorkers; i++) {
+            const worker = new Worker(__filename, {
+                workerData: { workerId: i }
+            });
+            
+            worker.on('message', (result) => {
+                this.handleWorkerResult(result);
+            });
+            
+            worker.on('error', (error) => {
+                console.error('Worker error:', error);
+            });
+            
+            this.workers.push({
+                worker,
+                busy: false,
+                id: i
+            });
+        }
+    }
+    
+    async addTask(task) {
+        return new Promise((resolve, reject) => {
+            this.taskQueue.push({ task, resolve, reject });
+            this.processQueue();
+        });
+    }
+    
+    processQueue() {
+        if (this.taskQueue.length === 0) return;
+        
+        const availableWorker = this.workers.find(w => !w.busy);
+        if (!availableWorker) return;
+        
+        const { task, resolve, reject } = this.taskQueue.shift();
+        
+        availableWorker.busy = true;
+        availableWorker.resolve = resolve;
+        availableWorker.reject = reject;
+        
+        availableWorker.worker.postMessage(task);
+    }
+    
+    handleWorkerResult(result) {
+        const worker = this.workers.find(w => w.id === result.workerId);
+        
+        if (worker) {
+            worker.busy = false;
+            
+            if (result.error) {
+                worker.reject(new Error(result.error));
+            } else {
+                worker.resolve(result.data);
+            }
+            
+            // Process next task in queue
+            this.processQueue();
+        }
+    }
+    
+    async scrapeUrls(urls) {
+        const tasks = urls.map(url => ({ type: 'scrape', url }));
+        const results = await Promise.all(
+            tasks.map(task => this.addTask(task))
+        );
+        
+        return results;
+    }
+    
+    async cleanup() {
+        await Promise.all(
+            this.workers.map(({ worker }) => worker.terminate())
+        );
+    }
+}
+
+// Worker thread code
+if (!isMainThread) {
+    const workerId = workerData.workerId;
+    let browser = null;
+    
+    const initializeBrowser = async () => {
+        if (!browser) {
+            browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+        }
+        return browser;
+    };
+    
+    const scrapeUrl = async (url) => {
+        const browser = await initializeBrowser();
+        const page = await browser.newPage();
+        
+        try {
+            await page.goto(url, { waitUntil: 'networkidle2' });
+            
+            const data = await page.evaluate(() => ({
+                title: document.title,
+                url: window.location.href,
+                wordCount: document.body.innerText.split(/\s+/).length,
+                timestamp: new Date().toISOString()
+            }));
+            
+            return data;
+            
+        } finally {
+            await page.close();
+        }
+    };
+    
+    parentPort.on('message', async (task) => {
+        try {
+            let result;
+            
+            switch (task.type) {
+                case 'scrape':
+                    result = await scrapeUrl(task.url);
+                    break;
+                default:
+                    throw new Error('Unknown task type');
+            }
+            
+            parentPort.postMessage({
+                workerId,
+                data: result
+            });
+            
+        } catch (error) {
+            parentPort.postMessage({
+                workerId,
+                error: error.message
+            });
+        }
+    });
+    
+    // Cleanup on exit
+    process.on('beforeExit', async () => {
+        if (browser) {
+            await browser.close();
+        }
+    });
+}
+
+// Usage (main thread only)
+if (isMainThread) {
+    (async () => {
+        const pool = new WorkerPool(4);
+        
+        try {
+            await pool.initialize();
+            
+            const urls = [
+                'https://example1.com',
+                'https://example2.com',
+                'https://example3.com',
+                'https://example4.com',
+                'https://example5.com',
+                'https://example6.com'
+            ];
+            
+            console.time('Worker Pool Scraping');
+            const results = await pool.scrapeUrls(urls);
+            console.timeEnd('Worker Pool Scraping');
+            
+            console.log(`Processed ${results.length} URLs with worker pool`);
+            
+        } finally {
+            await pool.cleanup();
+        }
+    })();
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="cluster-mode">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">cluster-mode.js</span>
+                                    <button class="run-example" data-example="cluster-mode">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const { Cluster } = require('puppeteer-cluster');
+const puppeteer = require('puppeteer');
+
+class AdvancedClusterScraper {
+    constructor(concurrency = 5) {
+        this.concurrency = concurrency;
+        this.cluster = null;
+        this.results = [];
+    }
+    
+    async initialize() {
+        this.cluster = await Cluster.launch({
+            concurrency: Cluster.CONCURRENCY_CONTEXT,
+            maxConcurrency: this.concurrency,
+            puppeteerOptions: {
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            },
+            timeout: 30000,
+            retryLimit: 3,
+            retryDelay: 1000,
+            monitor: true // Enable monitoring
+        });
+        
+        // Global error handling
+        this.cluster.on('taskerror', (err, data) => {
+            console.error(`Task error for ${data.url}:`, err.message);
+        });
+        
+        // Define the scraping task
+        await this.cluster.task(async ({ page, data }) => {
+            const { url, taskType } = data;
+            
+            try {
+                await page.goto(url, { waitUntil: 'networkidle2' });
+                
+                switch (taskType) {
+                    case 'basic':
+                        return await this.basicScrape(page, url);
+                    case 'detailed':
+                        return await this.detailedScrape(page, url);
+                    case 'screenshot':
+                        return await this.screenshotTask(page, url);
+                    default:
+                        throw new Error('Unknown task type');
+                }
+                
+            } catch (error) {
+                console.error(`Error processing ${url}:`, error.message);
+                throw error;
+            }
+        });
+    }
+    
+    async basicScrape(page, url) {
+        const data = await page.evaluate(() => ({
+            title: document.title,
+            url: window.location.href,
+            description: document.querySelector('meta[name="description"]')?.content || '',
+            links: Array.from(document.querySelectorAll('a')).length
+        }));
+        
+        return { ...data, taskType: 'basic' };
+    }
+    
+    async detailedScrape(page, url) {
+        const data = await page.evaluate(() => {
+            const getElementText = (selector) => {
+                const element = document.querySelector(selector);
+                return element ? element.textContent.trim() : '';
+            };
+            
+            return {
+                title: document.title,
+                url: window.location.href,
+                headings: Array.from(document.querySelectorAll('h1, h2, h3')).map(h => ({
+                    tag: h.tagName.toLowerCase(),
+                    text: h.textContent.trim()
+                })),
+                paragraphs: Array.from(document.querySelectorAll('p')).length,
+                images: Array.from(document.querySelectorAll('img')).map(img => ({
+                    src: img.src,
+                    alt: img.alt || ''
+                })),
+                forms: Array.from(document.querySelectorAll('form')).length,
+                wordCount: document.body.innerText.split(/\s+/).length
+            };
+        });
+        
+        return { ...data, taskType: 'detailed' };
+    }
+    
+    async screenshotTask(page, url) {
+        const screenshotBuffer = await page.screenshot({
+            fullPage: true,
+            type: 'png'
+        });
+        
+        // In a real scenario, you'd save this to disk or upload to cloud storage
+        return {
+            url,
+            screenshotSize: screenshotBuffer.length,
+            taskType: 'screenshot',
+            timestamp: new Date().toISOString()
+        };
+    }
+    
+    async processBatch(urls, taskType = 'basic') {
+        const results = [];
+        
+        // Queue all tasks
+        const promises = urls.map(url => 
+            this.cluster.execute({ url, taskType })
+                .then(result => {
+                    results.push(result);
+                    console.log(`Completed: ${url} (${taskType})`);
+                })
+                .catch(error => {
+                    console.error(`Failed: ${url}`, error.message);
+                    results.push({ url, error: error.message, taskType });
+                })
+        );
+        
+        // Wait for all tasks to complete
+        await Promise.all(promises);
+        
+        return results;
+    }
+    
+    async processWithDifferentTasks(urlsWithTasks) {
+        const results = [];
+        
+        for (const { url, taskType } of urlsWithTasks) {
+            try {
+                const result = await this.cluster.execute({ url, taskType });
+                results.push(result);
+                console.log(`Completed: ${url} (${taskType})`);
+            } catch (error) {
+                console.error(`Failed: ${url}`, error.message);
+                results.push({ url, error: error.message, taskType });
+            }
+        }
+        
+        return results;
+    }
+    
+    async getClusterStats() {
+        // Monitor cluster performance
+        return {
+            activeWorkers: this.cluster.workerCount,
+            queueSize: this.cluster.queueSize,
+            // Add custom metrics as needed
+        };
+    }
+    
+    async cleanup() {
+        if (this.cluster) {
+            await this.cluster.idle();
+            await this.cluster.close();
+        }
+    }
+}
+
+// Usage examples
+(async () => {
+    const scraper = new AdvancedClusterScraper(4);
+    
+    try {
+        await scraper.initialize();
+        
+        // Example 1: Basic scraping
+        const basicUrls = [
+            'https://example1.com',
+            'https://example2.com',
+            'https://example3.com'
+        ];
+        
+        console.time('Basic Scraping');
+        const basicResults = await scraper.processBatch(basicUrls, 'basic');
+        console.timeEnd('Basic Scraping');
+        
+        // Example 2: Mixed task types
+        const mixedTasks = [
+            { url: 'https://example1.com', taskType: 'detailed' },
+            { url: 'https://example2.com', taskType: 'screenshot' },
+            { url: 'https://example3.com', taskType: 'basic' }
+        ];
+        
+        console.time('Mixed Tasks');
+        const mixedResults = await scraper.processWithDifferentTasks(mixedTasks);
+        console.timeEnd('Mixed Tasks');
+        
+        console.log('Basic results:', basicResults.length);
+        console.log('Mixed results:', mixedResults.length);
+        
+    } finally {
+        await scraper.cleanup();
+    }
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue with remaining steps... -->
+            <div class="tutorial-step">
+                <h2>Step 3: Network Interception & Monitoring</h2>
+                <p>Intercept, modify, and monitor network requests to control data flow and debug issues.</p>
+
+                <div class="example-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="request-interception">Request Interception</button>
+                        <button class="tab-button" data-tab="response-modification">Response Modification</button>
+                        <button class="tab-button" data-tab="network-monitoring">Network Monitoring</button>
+                    </div>
+                    
+                    <div class="tab-contents">
+                        <div class="tab-content active" id="request-interception">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">request-interception.js</span>
+                                    <button class="run-example" data-example="request-interception">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class NetworkInterceptor {
+    constructor() {
+        this.interceptedRequests = new Map();
+        this.requestStats = {
+            total: 0,
+            blocked: 0,
+            modified: 0,
+            cached: 0
+        };
+    }
+    
+    async setupInterception(page) {
+        await page.setRequestInterception(true);
+        
+        page.on('request', async (request) => {
+            this.requestStats.total++;
+            
+            const url = request.url();
+            const resourceType = request.resourceType();
+            
+            // Block tracking and analytics
+            if (this.shouldBlockRequest(url, resourceType)) {
+                this.requestStats.blocked++;
+                console.log(`🚫 Blocked: ${resourceType} - ${url}`);
+                request.abort();
+                return;
+            }
+            
+            // Modify headers for API requests
+            if (resourceType === 'xhr' || resourceType === 'fetch') {
+                const headers = request.headers();
+                const modifiedHeaders = {
+                    ...headers,
+                    'X-Custom-Header': 'Puppeteer-Modified',
+                    'User-Agent': 'Custom-Bot/1.0'
+                };
+                
+                this.requestStats.modified++;
+                console.log(`🔄 Modified: ${url}`);
+                
+                request.continue({
+                    headers: modifiedHeaders
+                });
+                return;
+            }
+            
+            // Check cache for static resources
+            if (this.isStaticResource(resourceType) && this.isCached(url)) {
+                this.requestStats.cached++;
+                console.log(`💾 Cached: ${url}`);
+                
+                // Serve from cache (simplified example)
+                request.respond({
+                    status: 304,
+                    headers: { 'Cache-Control': 'max-age=3600' }
+                });
+                return;
+            }
+            
+            // Default: continue request
+            request.continue();
+        });
+        
+        // Monitor responses
+        page.on('response', (response) => {
+            this.handleResponse(response);
+        });
+    }
+    
+    shouldBlockRequest(url, resourceType) {
+        const blockedDomains = [
+            'google-analytics.com',
+            'googletagmanager.com',
+            'facebook.com',
+            'twitter.com',
+            'linkedin.com',
+            'doubleclick.net'
+        ];
+        
+        const blockedTypes = ['image', 'font', 'stylesheet'];
+        
+        return blockedDomains.some(domain => url.includes(domain)) ||
+               blockedTypes.includes(resourceType);
+    }
+    
+    isStaticResource(resourceType) {
+        return ['script', 'stylesheet', 'image', 'font'].includes(resourceType);
+    }
+    
+    isCached(url) {
+        // Simple cache simulation
+        return this.interceptedRequests.has(url);
+    }
+    
+    handleResponse(response) {
+        const url = response.url();
+        const status = response.status();
+        const contentType = response.headers()['content-type'] || '';
+        
+        // Log API responses
+        if (contentType.includes('application/json')) {
+            console.log(`📊 API Response: ${status} - ${url}`);
+        }
+        
+        // Store in "cache"
+        this.interceptedRequests.set(url, {
+            status,
+            contentType,
+            timestamp: Date.now()
+        });
+    }
+    
+    async interceptWithAuth(page, authToken) {
+        await page.setRequestInterception(true);
+        
+        page.on('request', (request) => {
+            const url = request.url();
+            
+            // Add authentication to API requests
+            if (url.includes('/api/') || url.includes('/graphql')) {
+                const headers = {
+                    ...request.headers(),
+                    'Authorization': `Bearer ${authToken}`,
+                    'X-Requested-With': 'XMLHttpRequest'
+                };
+                
+                console.log(`🔐 Auth added: ${url}`);
+                request.continue({ headers });
+            } else {
+                request.continue();
+            }
+        });
+    }
+    
+    async interceptWithMockData(page, mockResponses) {
+        await page.setRequestInterception(true);
+        
+        page.on('request', (request) => {
+            const url = request.url();
+            
+            // Check if we have mock data for this URL
+            const mockData = mockResponses.find(mock => 
+                url.includes(mock.urlPattern)
+            );
+            
+            if (mockData) {
+                console.log(`🎭 Mock response: ${url}`);
+                request.respond({
+                    status: mockData.status || 200,
+                    contentType: mockData.contentType || 'application/json',
+                    body: JSON.stringify(mockData.data)
+                });
+            } else {
+                request.continue();
+            }
+        });
+    }
+    
+    getStats() {
+        return {
+            ...this.requestStats,
+            cacheHitRatio: this.requestStats.cached / this.requestStats.total,
+            blockRatio: this.requestStats.blocked / this.requestStats.total
+        };
+    }
+}
+
+// Usage examples
+(async () => {
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    
+    const interceptor = new NetworkInterceptor();
+    
+    // Example 1: Basic interception
+    await interceptor.setupInterception(page);
+    
+    // Example 2: Authentication
+    await interceptor.interceptWithAuth(page, 'your-auth-token');
+    
+    // Example 3: Mock responses
+    const mockResponses = [
+        {
+            urlPattern: '/api/user',
+            data: { name: 'John Doe', email: 'john@example.com' },
+            status: 200
+        },
+        {
+            urlPattern: '/api/posts',
+            data: [{ id: 1, title: 'Test Post' }],
+            status: 200
+        }
+    ];
+    
+    await interceptor.interceptWithMockData(page, mockResponses);
+    
+    // Navigate and see interception in action
+    await page.goto('https://example.com');
+    
+    // Print statistics
+    console.log('Network Statistics:', interceptor.getStats());
+    
+    await browser.close();
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="response-modification">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">response-modification.js</span>
+                                    <button class="run-example" data-example="response-modification">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class ResponseModifier {
+    constructor() {
+        this.modifiedResponses = new Map();
+        this.injectedScripts = new Set();
+    }
+    
+    async setupResponseModification(page) {
+        await page.setRequestInterception(true);
+        
+        page.on('request', async (request) => {
+            const url = request.url();
+            const resourceType = request.resourceType();
+            
+            // Modify HTML responses
+            if (resourceType === 'document') {
+                await this.modifyHtmlResponse(request);
+            }
+            // Modify JSON API responses
+            else if (this.isJsonApiRequest(request)) {
+                await this.modifyJsonResponse(request);
+            }
+            // Inject custom scripts
+            else if (this.shouldInjectScript(request)) {
+                await this.injectCustomScript(request);
+            }
+            else {
+                request.continue();
+            }
+        });
+    }
+    
+    async modifyHtmlResponse(request) {
+        try {
+            // Fetch the original response
+            const response = await request.continue();
+            
+            // Get the response body
+            const originalHtml = await response.text();
+            
+            // Modify the HTML
+            const modifiedHtml = this.injectCustomElements(originalHtml);
+            
+            // Store modified response
+            this.modifiedResponses.set(request.url(), modifiedHtml);
+            
+            // Respond with modified HTML
+            await request.respond({
+                status: 200,
+                contentType: 'text/html',
+                body: modifiedHtml
+            });
+            
+        } catch (error) {
+            console.error('Error modifying HTML:', error);
+            request.continue();
+        }
+    }
+    
+    injectCustomElements(html) {
+        // Add custom CSS
+        const customCSS = `
+            <style>
+                .puppeteer-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.1);
+                    z-index: 9999;
+                    pointer-events: none;
+                }
+                .puppeteer-indicator {
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: #ff6b6b;
+                    color: white;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    z-index: 10000;
+                }
+            </style>
+        `;
+        
+        // Add custom elements
+        const customElements = `
+            <div class="puppeteer-overlay"></div>
+            <div class="puppeteer-indicator">🤖 Puppeteer Active</div>
+        `;
+        
+        // Inject custom JavaScript
+        const customJS = `
+            <script>
+                console.log('🎯 Custom script injected by Puppeteer');
+                
+                // Add custom functionality
+                window.PuppeteerUtils = {
+                    highlightElement: function(selector) {
+                        const element = document.querySelector(selector);
+                        if (element) {
+                            element.style.border = '2px solid #ff6b6b';
+                            element.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+                        }
+                    },
+                    
+                    collectFormData: function() {
+                        const forms = Array.from(document.querySelectorAll('form'));
+                        return forms.map(form => ({
+                            action: form.action,
+                            method: form.method,
+                            fields: Array.from(form.elements).map(field => ({
+                                name: field.name,
+                                type: field.type,
+                                value: field.value
+                            }))
+                        }));
+                    },
+                    
+                    trackClicks: function() {
+                        document.addEventListener('click', function(e) {
+                            console.log('Click tracked:', {
+                                element: e.target.tagName,
+                                text: e.target.textContent?.substring(0, 50),
+                                timestamp: new Date().toISOString()
+                            });
+                        });
+                    }
+                };
+                
+                // Auto-start click tracking
+                window.PuppeteerUtils.trackClicks();
+            </script>
+        `;
+        
+        // Inject into HTML
+        let modifiedHtml = html;
+        
+        // Add CSS to head
+        modifiedHtml = modifiedHtml.replace('</head>', customCSS + '</head>');
+        
+        // Add elements to body
+        modifiedHtml = modifiedHtml.replace('</body>', customElements + customJS + '</body>');
+        
+        return modifiedHtml;
+    }
+    
+    async modifyJsonResponse(request) {
+        try {
+            const url = request.url();
+            
+            // Define modifications for specific API endpoints
+            const apiModifications = {
+                '/api/users': (data) => {
+                    if (Array.isArray(data)) {
+                        return data.map(user => ({
+                            ...user,
+                            modified: true,
+                            timestamp: new Date().toISOString()
+                        }));
+                    }
+                    return data;
+                },
+                
+                '/api/posts': (data) => {
+                    if (Array.isArray(data)) {
+                        return [
+                            { id: 999, title: 'Injected Post', content: 'This was added by Puppeteer' },
+                            ...data
+                        ];
+                    }
+                    return data;
+                }
+            };
+            
+            // Check if we should modify this response
+            const modifier = Object.entries(apiModifications).find(([pattern]) => 
+                url.includes(pattern)
+            );
+            
+            if (modifier) {
+                // Fetch original response
+                const response = await fetch(url);
+                const originalData = await response.json();
+                
+                // Apply modification
+                const modifiedData = modifier[1](originalData);
+                
+                console.log(`📝 Modified JSON response: ${url}`);
+                
+                // Respond with modified data
+                await request.respond({
+                    status: 200,
+                    contentType: 'application/json',
+                    body: JSON.stringify(modifiedData)
+                });
+            } else {
+                request.continue();
+            }
+            
+        } catch (error) {
+            console.error('Error modifying JSON response:', error);
+            request.continue();
+        }
+    }
+    
+    isJsonApiRequest(request) {
+        const url = request.url();
+        const headers = request.headers();
+        
+        return url.includes('/api/') || 
+               url.includes('/graphql') ||
+               headers.accept?.includes('application/json');
+    }
+    
+    shouldInjectScript(request) {
+        const url = request.url();
+        return request.resourceType() === 'script' && 
+               url.includes('jquery') || 
+               url.includes('lodash');
+    }
+    
+    async injectCustomScript(request) {
+        try {
+            const customScript = `
+                // Custom utility functions
+                window.PuppeteerExtensions = {
+                    waitForElement: function(selector, timeout = 5000) {
+                        return new Promise((resolve, reject) => {
+                            const element = document.querySelector(selector);
+                            if (element) {
+                                resolve(element);
+                                return;
+                            }
+                            
+                            const observer = new MutationObserver(() => {
+                                const element = document.querySelector(selector);
+                                if (element) {
+                                    observer.disconnect();
+                                    resolve(element);
+                                }
+                            });
+                            
+                            observer.observe(document.body, {
+                                childList: true,
+                                subtree: true
+                            });
+                            
+                            setTimeout(() => {
+                                observer.disconnect();
+                                reject(new Error('Element not found within timeout'));
+                            }, timeout);
+                        });
+                    },
+                    
+                    simulateTyping: function(element, text, delay = 100) {
+                        return new Promise((resolve) => {
+                            let i = 0;
+                            const type = () => {
+                                if (i < text.length) {
+                                    element.value += text[i];
+                                    element.dispatchEvent(new Event('input'));
+                                    i++;
+                                    setTimeout(type, delay);
+                                } else {
+                                    resolve();
+                                }
+                            };
+                            type();
+                        });
+                    }
+                };
+                
+                console.log('🔧 Puppeteer extensions loaded');
+            `;
+            
+            await request.respond({
+                status: 200,
+                contentType: 'application/javascript',
+                body: customScript
+            });
+            
+        } catch (error) {
+            console.error('Error injecting script:', error);
+            request.continue();
+        }
+    }
+}
+
+// Usage
+(async () => {
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    
+    const modifier = new ResponseModifier();
+    await modifier.setupResponseModification(page);
+    
+    await page.goto('https://example.com');
+    
+    // Use injected utilities
+    const formData = await page.evaluate(() => {
+        return window.PuppeteerUtils?.collectFormData();
+    });
+    
+    console.log('Form data:', formData);
+    
+    await browser.close();
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="network-monitoring">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">network-monitoring.js</span>
+                                    <button class="run-example" data-example="network-monitoring">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+const fs = require('fs');
+
+class NetworkMonitor {
+    constructor() {
+        this.networkLog = [];
+        this.performanceMetrics = {
+            totalRequests: 0,
+            totalBytes: 0,
+            averageResponseTime: 0,
+            slowRequests: [],
+            failedRequests: []
+        };
+        this.startTime = Date.now();
+    }
+    
+    async startMonitoring(page) {
+        // Enable network domain
+        const client = await page.target().createCDPSession();
+        await client.send('Network.enable');
+        
+        // Track all network activity
+        client.on('Network.requestWillBeSent', (params) => {
+            this.handleRequestStart(params);
+        });
+        
+        client.on('Network.responseReceived', (params) => {
+            this.handleResponseReceived(params);
+        });
+        
+        client.on('Network.loadingFinished', (params) => {
+            this.handleLoadingFinished(params);
+        });
+        
+        client.on('Network.loadingFailed', (params) => {
+            this.handleLoadingFailed(params);
+        });
+        
+        // Track WebSocket connections
+        client.on('Network.webSocketCreated', (params) => {
+            this.handleWebSocketCreated(params);
+        });
+        
+        // Also monitor using page events
+        page.on('request', (request) => {
+            this.logRequest(request);
+        });
+        
+        page.on('response', (response) => {
+            this.logResponse(response);
+        });
+        
+        page.on('requestfailed', (request) => {
+            this.logFailedRequest(request);
+        });
+        
+        return client;
+    }
+    
+    handleRequestStart(params) {
+        const request = {
+            requestId: params.requestId,
+            url: params.request.url,
+            method: params.request.method,
+            headers: params.request.headers,
+            timestamp: params.timestamp,
+            initiator: params.initiator,
+            resourceType: params.type
+        };
+        
+        this.networkLog.push({
+            type: 'request',
+            timestamp: Date.now(),
+            data: request
+        });
+        
+        this.performanceMetrics.totalRequests++;
+    }
+    
+    handleResponseReceived(params) {
+        const response = {
+            requestId: params.requestId,
+            url: params.response.url,
+            status: params.response.status,
+            statusText: params.response.statusText,
+            headers: params.response.headers,
+            mimeType: params.response.mimeType,
+            timestamp: params.timestamp,
+            fromDiskCache: params.response.fromDiskCache,
+            fromServiceWorker: params.response.fromServiceWorker,
+            encodedDataLength: params.response.encodedDataLength
+        };
+        
+        this.networkLog.push({
+            type: 'response',
+            timestamp: Date.now(),
+            data: response
+        });
+        
+        // Track slow requests (>2 seconds)
+        const requestTime = this.calculateRequestTime(params.requestId);
+        if (requestTime > 2000) {
+            this.performanceMetrics.slowRequests.push({
+                url: params.response.url,
+                responseTime: requestTime,
+                timestamp: params.timestamp
+            });
+        }
+        
+        this.performanceMetrics.totalBytes += params.response.encodedDataLength || 0;
+    }
+    
+    handleLoadingFinished(params) {
+        const finished = {
+            requestId: params.requestId,
+            timestamp: params.timestamp,
+            encodedDataLength: params.encodedDataLength
+        };
+        
+        this.networkLog.push({
+            type: 'finished',
+            timestamp: Date.now(),
+            data: finished
+        });
+    }
+    
+    handleLoadingFailed(params) {
+        const failed = {
+            requestId: params.requestId,
+            timestamp: params.timestamp,
+            errorText: params.errorText,
+            canceled: params.canceled
+        };
+        
+        this.networkLog.push({
+            type: 'failed',
+            timestamp: Date.now(),
+            data: failed
+        });
+        
+        this.performanceMetrics.failedRequests.push(failed);
+    }
+    
+    handleWebSocketCreated(params) {
+        this.networkLog.push({
+            type: 'websocket',
+            timestamp: Date.now(),
+            data: {
+                requestId: params.requestId,
+                url: params.url,
+                initiator: params.initiator
+            }
+        });
+    }
+    
+    logRequest(request) {
+        console.log(`➡️  ${request.method()} ${request.url()}`);
+        
+        // Log headers for debugging
+        if (request.headers()['authorization']) {
+            console.log('   🔐 Authorization header present');
+        }
+        
+        if (request.isNavigationRequest()) {
+            console.log('   🧭 Navigation request');
+        }
+    }
+    
+    logResponse(response) {
+        const status = response.status();
+        const url = response.url();
+        
+        let statusIcon = '✅';
+        if (status >= 400) statusIcon = '❌';
+        else if (status >= 300) statusIcon = '➡️';
+        
+        console.log(`${statusIcon} ${status} ${url}`);
+        
+        // Log content type
+        const contentType = response.headers()['content-type'];
+        if (contentType) {
+            console.log(`   📄 Content-Type: ${contentType}`);
+        }
+    }
+    
+    logFailedRequest(request) {
+        console.log(`💥 FAILED: ${request.url()}`);
+        if (request.failure()) {
+            console.log(`   Error: ${request.failure().errorText}`);
+        }
+    }
+    
+    calculateRequestTime(requestId) {
+        // Find request start and response received events
+        const requestEvent = this.networkLog.find(log => 
+            log.type === 'request' && log.data.requestId === requestId
+        );
+        
+        const responseEvent = this.networkLog.find(log => 
+            log.type === 'response' && log.data.requestId === requestId
+        );
+        
+        if (requestEvent && responseEvent) {
+            return responseEvent.timestamp - requestEvent.timestamp;
+        }
+        
+        return 0;
+    }
+    
+    generateReport() {
+        const totalTime = Date.now() - this.startTime;
+        
+        // Calculate averages
+        const responseTimes = this.networkLog
+            .filter(log => log.type === 'response')
+            .map(log => this.calculateRequestTime(log.data.requestId))
+            .filter(time => time > 0);
+        
+        const averageResponseTime = responseTimes.length > 0 
+            ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length
+            : 0;
+        
+        // Group by resource type
+        const resourceTypes = {};
+        this.networkLog
+            .filter(log => log.type === 'request')
+            .forEach(log => {
+                const type = log.data.resourceType || 'unknown';
+                resourceTypes[type] = (resourceTypes[type] || 0) + 1;
+            });
+        
+        // Group by domain
+        const domains = {};
+        this.networkLog
+            .filter(log => log.type === 'request')
+            .forEach(log => {
+                try {
+                    const domain = new URL(log.data.url).hostname;
+                    domains[domain] = (domains[domain] || 0) + 1;
+                } catch (e) {
+                    // Invalid URL
+                }
+            });
+        
+        return {
+            summary: {
+                totalRequests: this.performanceMetrics.totalRequests,
+                totalBytes: this.performanceMetrics.totalBytes,
+                averageResponseTime: Math.round(averageResponseTime),
+                sessionDuration: totalTime,
+                failedRequests: this.performanceMetrics.failedRequests.length,
+                slowRequests: this.performanceMetrics.slowRequests.length
+            },
+            breakdown: {
+                resourceTypes,
+                domains,
+                slowRequests: this.performanceMetrics.slowRequests.slice(0, 10), // Top 10
+                failedRequests: this.performanceMetrics.failedRequests.slice(0, 10)
+            }
+        };
+    }
+    
+    saveLog(filename = 'network-log.json') {
+        const report = this.generateReport();
+        const logData = {
+            report,
+            fullLog: this.networkLog
+        };
+        
+        fs.writeFileSync(filename, JSON.stringify(logData, null, 2));
+        console.log(`📊 Network log saved to ${filename}`);
+    }
+    
+    printSummary() {
+        const report = this.generateReport();
+        
+        console.log('\n📊 Network Performance Report');
+        console.log('================================');
+        console.log(`Total Requests: ${report.summary.totalRequests}`);
+        console.log(`Total Bytes: ${(report.summary.totalBytes / 1024 / 1024).toFixed(2)} MB`);
+        console.log(`Average Response Time: ${report.summary.averageResponseTime}ms`);
+        console.log(`Failed Requests: ${report.summary.failedRequests}`);
+        console.log(`Slow Requests (>2s): ${report.summary.slowRequests}`);
+        
+        console.log('\n📈 Resource Types:');
+        Object.entries(report.breakdown.resourceTypes).forEach(([type, count]) => {
+            console.log(`  ${type}: ${count}`);
+        });
+        
+        console.log('\n🌐 Top Domains:');
+        Object.entries(report.breakdown.domains)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 5)
+            .forEach(([domain, count]) => {
+                console.log(`  ${domain}: ${count}`);
+            });
+    }
+}
+
+// Usage
+(async () => {
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    
+    const monitor = new NetworkMonitor();
+    await monitor.startMonitoring(page);
+    
+    // Navigate to a website
+    await page.goto('https://example.com');
+    
+    // Wait for page to fully load
+    await page.waitForLoadState('networkidle');
+    
+    // Generate and display report
+    monitor.printSummary();
+    monitor.saveLog();
+    
+    await browser.close();
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Advanced Patterns -->
+            <div class="tutorial-step">
+                <h2>Step 4: Advanced Patterns & Enterprise Features</h2>
+                <p>Implement enterprise-grade patterns including stealth mode, PDF generation, mobile emulation, and CI/CD integration.</p>
+
+                <div class="example-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-button active" data-tab="stealth-mode">Stealth Mode</button>
+                        <button class="tab-button" data-tab="pdf-generation">PDF Generation</button>
+                        <button class="tab-button" data-tab="mobile-emulation">Mobile Emulation</button>
+                        <button class="tab-button" data-tab="cicd-integration">CI/CD Integration</button>
+                    </div>
+                    
+                    <div class="tab-contents">
+                        <div class="tab-content active" id="stealth-mode">
+                            <div class="code-example">
+                                <div class="code-header">
+                                    <span class="code-title">stealth-mode.js</span>
+                                    <button class="run-example" data-example="stealth-mode">
+                                        <i class="fas fa-play"></i> Run Example
+                                    </button>
+                                </div>
+                                <div class="code-content">
+<pre><code class="language-javascript">const puppeteer = require('puppeteer');
+
+class StealthBrowser {
+    constructor() {
+        this.userAgents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        ];
+        
+        this.viewports = [
+            { width: 1920, height: 1080 },
+            { width: 1366, height: 768 },
+            { width: 1440, height: 900 },
+            { width: 1536, height: 864 }
+        ];
+    }
+    
+    async createStealthBrowser() {
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--disable-gpu',
+                '--disable-background-networking',
+                '--disable-default-apps',
+                '--disable-extensions',
+                '--disable-sync',
+                '--disable-translate',
+                '--hide-scrollbars',
+                '--metrics-recording-only',
+                '--mute-audio',
+                '--no-default-browser-check',
+                '--safebrowsing-disable-auto-update',
+                '--disable-web-security',
+                '--disable-features=VizDisplayCompositor',
+                '--disable-blink-features=AutomationControlled'
+            ]
+        });
+        
+        return browser;
+    }
+    
+    async createStealthPage(browser) {
+        const page = await browser.newPage();
+        
+        // Remove webdriver property
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined,
+            });
+        });
+        
+        // Remove automation indicators
+        await page.evaluateOnNewDocument(() => {
+            window.chrome = {
+                runtime: {},
+                // Add more chrome properties as needed
+            };
+        });
+        
+        // Override permissions
+        await page.evaluateOnNewDocument(() => {
+            const originalQuery = window.navigator.permissions.query;
+            return window.navigator.permissions.query = (parameters) => (
+                parameters.name === 'notifications' ?
+                    Promise.resolve({ state: Notification.permission }) :
+                    originalQuery(parameters)
+            );
+        });
+        
+        // Override plugin array
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3, 4, 5],
+            });
+        });
+        
+        // Override languages
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en'],
+            });
+        });
+        
+        // Random viewport
+        const viewport = this.viewports[Math.floor(Math.random() * this.viewports.length)];
+        await page.setViewport(viewport);
+        
+        // Random user agent
+        const userAgent = this.userAgents[Math.floor(Math.random() * this.userAgents.length)];
+        await page.setUserAgent(userAgent);
+        
+        // Set realistic headers
+        await page.setExtraHTTPHeaders({
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        });
+        
+        return page;
+    }
+    
+    async humanizeInteractions(page) {
+        // Add random delays to actions
+        const originalClick = page.click;
+        page.click = async (selector, options = {}) => {
+            await this.randomDelay(100, 300);
+            return originalClick.call(page, selector, options);
+        };
+        
+        const originalType = page.type;
+        page.type = async (selector, text, options = {}) => {
+            await this.randomDelay(200, 500);
+            return originalType.call(page, selector, text, { 
+                delay: Math.random() * 100 + 50,
+                ...options 
+            });
+        };
+        
+        // Add mouse movements
+        await page.mouse.move(
+            Math.random() * 1000,
+            Math.random() * 800
+        );
+    }
+    
+    async randomDelay(min = 1000, max = 3000) {
+        const delay = Math.random() * (max - min) + min;
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    
+    async mimicHumanBehavior(page) {
+        // Random scroll patterns
+        await page.evaluate(() => {
+            const scrolls = Math.floor(Math.random() * 5) + 1;
+            let currentScroll = 0;
+            
+            const scrollInterval = setInterval(() => {
+                const scrollAmount = Math.random() * 200 + 100;
+                window.scrollBy(0, scrollAmount);
+                currentScroll++;
+                
+                if (currentScroll >= scrolls) {
+                    clearInterval(scrollInterval);
+                }
+            }, Math.random() * 1000 + 500);
+        });
+        
+        // Random mouse movements
+        for (let i = 0; i < 3; i++) {
+            await page.mouse.move(
+                Math.random() * 1000,
+                Math.random() * 800,
+                { steps: Math.floor(Math.random() * 10) + 1 }
+            );
+            await this.randomDelay(500, 1500);
+        }
+        
+        // Random page interactions
+        try {
+            const elements = await page.$$('a, button, input');
+            if (elements.length > 0) {
+                const randomElement = elements[Math.floor(Math.random() * elements.length)];
+                await randomElement.hover();
+                await this.randomDelay(1000, 2000);
+            }
+        } catch (error) {
+            // Ignore errors in random interactions
+        }
+    }
+    
+    async detectBotDetection(page) {
+        const detectionChecks = await page.evaluate(() => {
+            const checks = {
+                webdriver: navigator.webdriver,
+                chrome: !!window.chrome,
+                permissions: navigator.permissions,
+                plugins: navigator.plugins.length,
+                languages: navigator.languages,
+                automation: window.navigator.automation,
+                callPhantom: window.callPhantom,
+                phantom: window._phantom,
+                webDriverPresent: !!window.webdriver,
+                seleniumIde: !!window._selenium,
+                documentUndefined: document === undefined
+            };
+            
+            return checks;
+        });
+        
+        const suspiciousFlags = Object.entries(detectionChecks)
+            .filter(([key, value]) => {
+                if (key === 'webdriver' && value) return true;
+                if (key === 'automation' && value) return true;
+                if (key === 'callPhantom' && value) return true;
+                if (key === 'phantom' && value) return true;
+                if (key === 'webDriverPresent' && value) return true;
+                if (key === 'seleniumIde' && value) return true;
+                if (key === 'documentUndefined' && value) return true;
+                return false;
+            });
+        
+        if (suspiciousFlags.length > 0) {
+            console.warn('🚨 Bot detection flags found:', suspiciousFlags);
+        } else {
+            console.log('✅ No bot detection flags detected');
+        }
+        
+        return suspiciousFlags;
+    }
+    
+    async stealthyPageVisit(url, options = {}) {
+        const browser = await this.createStealthBrowser();
+        const page = await this.createStealthPage(browser);
+        
+        try {
+            await this.humanizeInteractions(page);
+            
+            // Navigate with random delay
+            await this.randomDelay(1000, 3000);
+            await page.goto(url, { waitUntil: 'networkidle2' });
+            
+            // Check for bot detection
+            await this.detectBotDetection(page);
+            
+            // Mimic human behavior
+            await this.mimicHumanBehavior(page);
+            
+            // Custom interactions if provided
+            if (options.interactions) {
+                for (const interaction of options.interactions) {
+                    await this.randomDelay(500, 1500);
+                    await interaction(page);
+                }
+            }
+            
+            // Wait before closing
+            await this.randomDelay(2000, 5000);
+            
+            return page;
+            
+        } catch (error) {
+            console.error('Stealth navigation failed:', error);
+            throw error;
+        } finally {
+            // Don't close browser here if page is returned
+        }
+    }
+}
+
+// Usage examples
+(async () => {
+    const stealthBrowser = new StealthBrowser();
+    
+    // Example 1: Basic stealth visit
+    const page = await stealthBrowser.stealthyPageVisit('https://bot-detector.com');
+    
+    // Example 2: Stealth visit with interactions
+    const pageWithInteractions = await stealthBrowser.stealthyPageVisit('https://example.com', {
+        interactions: [
+            async (page) => {
+                await page.type('#search', 'test query');
+            },
+            async (page) => {
+                await page.click('#submit');
+            }
+        ]
+    });
+    
+    // Clean up
+    await page.browser().close();
+})();</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Continue with other advanced patterns... -->
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Load JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
